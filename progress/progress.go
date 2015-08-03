@@ -30,7 +30,7 @@ func (p *ProgressBar) draw() {
 	p.ctx.FillRect(0, 0, p.width*p.percent/100, p.height)
 }
 
-func NewProgressBar(fore, back color.Color, width, height int) *ProgressBar {
+func New(fore, back color.Color, width, height int) *ProgressBar {
 	c := xjs.CreateElement("canvas").(*dom.HTMLCanvasElement)
 	c.SetAttribute("width", strconv.Itoa(width))
 	c.SetAttribute("height", strconv.Itoa(height))
