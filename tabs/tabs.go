@@ -1,4 +1,4 @@
-package main
+package tabs
 
 import (
 	"github.com/MJKWoolnough/gopherjs/xjs"
@@ -11,7 +11,7 @@ type Tab struct {
 }
 
 func MakeTabs(t []Tab) dom.Node {
-	f := Fragment()
+	f := xjs.DocumentFragment()
 	if len(t) < 0 {
 		return f
 	}
@@ -21,7 +21,7 @@ func MakeTabs(t []Tab) dom.Node {
 	contents.Class().SetString("content")
 	tabs := make([]dom.Element, len(t))
 	for n := range t {
-		tabs[n] = SetInnerText(xjs.CreateElement("div"), t[n].Name).(dom.Element)
+		tabs[n] = xjs.SetInnerText(xjs.CreateElement("div"), t[n].Name).(dom.Element)
 		tabs[n].AddEventListener("click", false, func() func(dom.Event) {
 			i := n
 			return func(e dom.Event) {
