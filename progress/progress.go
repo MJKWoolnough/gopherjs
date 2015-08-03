@@ -19,8 +19,10 @@ type ProgressBar struct {
 }
 
 func (p *ProgressBar) Percent(i int) {
-	p.percent = i
-	p.draw()
+	if i != p.percent {
+		p.percent = i
+		p.draw()
+	}
 }
 
 func (p *ProgressBar) draw() {
@@ -53,16 +55,16 @@ func New(fore, back color.Color, width, height int) *ProgressBar {
 type ProgressReader struct {
 	*ProgressBar
 	io.Reader
-	offset, size int
+	offset, size uint64
 }
 
 func (p *ProgressBar) Reader(r io.Reader, size int) *ProgressReader {
-	return &ProgressReader{p, r, 0, size}
+	return &ProgressReader{p, r, 0, uint64(size)}
 }
 
 func (pr *ProgressReader) Read(p []byte) (int, error) {
 	n, err := pr.Reader.Read(p)
 	pr.offset += n
-	pr.Percent(100 * pr.offset / pr.size)
+	pr.Percent(int(100 * pr.offset / pr.size))
 	return n, err
 }
