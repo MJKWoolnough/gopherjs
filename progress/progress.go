@@ -60,7 +60,7 @@ func (p *ProgressBar) Reader(r io.Reader, size int) *ProgressReader {
 	return &ProgressReader{p, r, 0, size}
 }
 
-func (pr ProgressReader) Read(p []byte) (int, error) {
+func (pr *ProgressReader) Read(p []byte) (int, error) {
 	n, err := pr.Reader.Read(p)
 	pr.offset += n
 	pr.Percent(100 * pr.offset / pr.size)
