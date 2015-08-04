@@ -1,6 +1,7 @@
 package files
 
 import (
+	"errors"
 	"io"
 	"time"
 
@@ -48,7 +49,7 @@ func (f File) Name() string {
 type FileReader struct {
 	f            File
 	fr           *js.Object
-	offset, size int
+	offset, size int64
 }
 
 func NewFileReader(f File) *FileReader {
@@ -56,38 +57,76 @@ func NewFileReader(f File) *FileReader {
 		f,
 		js.Global.Get("FileReader").New(),
 		0,
-		f.Size(),
+		int64(f.Size()),
 	}
 }
 
-func (fr *FileReader) Read(p []byte) (int, error) {
-	if fr.offset == fr.size {
+func (fr *FileReader) Close() error {
+	fr.fr = nil
+	return nil
+}
+
+func (fr *FileReader) Read(b []byte) (int, error) {
+	n, err := fr.ReadAt(b, int64(fr.offset))
+	fr.offset += int64(n)
+	return n, err
+}
+
+func (fr *FileReader) ReadAt(b []byte, off int64) (int, error) {
+	if fr.fr == nil {
+		return 0, ErrClosed
+	}
+	if off >= fr.size {
 		return 0, io.EOF
 	}
-	type result struct {
+
+	type readResult struct {
 		size int
 		err  error
 	}
-	c := make(chan result)
+
+	c := make(chan readResult)
 	fr.fr.Set("onloadend", func(*js.Object) {
 		arr := js.Global.Get("Uint8Array").New(fr.fr.Get("result"))
 		buf := arr.Interface().([]byte)
 		go func() {
 			if len(buf) == 0 {
-				c <- result{0, io.EOF}
+				c <- readResult{0, io.EOF}
 			} else {
-				copy(p, buf)
-				c <- result{len(buf), nil}
+				copy(b, buf)
+				c <- readResult{len(buf), nil}
 			}
 		}()
 	})
-	e := fr.offset + len(p)
+	e := off + int64(len(b))
 	if e > fr.size {
 		e = fr.size
 	}
 	blob := fr.f.b.Call("slice", fr.offset, e)
 	fr.fr.Call("readAsArrayBuffer", blob)
-	res := <-c
-	fr.offset = e
-	return res.size, res.err
+	r := <-c
+	return r.size, r.err
 }
+
+func (fr *FileReader) Seek(offset int64, whence int) (int64, error) {
+	if fr.fr == nil {
+		return 0, ErrClosed
+	}
+	switch whence {
+	case 0:
+		fr.offset = offset
+	case 1:
+		fr.offset += offset
+	case 2:
+		fr.offset = fr.size + offset
+	}
+	if fr.offset < 0 {
+		fr.offset = 0
+	}
+	return fr.offset, nil
+}
+
+// Errors
+var (
+	ErrClosed = errors.New("file closed")
+)
