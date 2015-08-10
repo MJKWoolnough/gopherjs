@@ -130,7 +130,7 @@ func MakeTabs(t []Tab) dom.Node {
 				contents.ParentNode().ReplaceChild(newContents, contents)
 				contents = newContents
 				tabs[i].Class().Add("selected")
-				t[i].Func(contents)
+				go t[i].Func(contents)
 			}
 		}())
 		tabsDiv.AppendChild(tabs[n])
