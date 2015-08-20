@@ -102,7 +102,7 @@ func (fr *FileReader) ReadAt(b []byte, off int64) (int, error) {
 	if e > fr.size {
 		e = fr.size
 	}
-	blob := fr.f.b.Call("slice", fr.offset, e)
+	blob := fr.b.Call("slice", fr.offset, e)
 	fr.fr.Call("readAsArrayBuffer", blob)
 	r := <-c
 	return r.size, r.err
