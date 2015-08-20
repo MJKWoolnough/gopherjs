@@ -18,8 +18,8 @@ func NewBlob(b *js.Object) Blob {
 	return Blob{b}
 }
 
-func (b Blob) Size() int64 {
-	return b.b.Get("size").Int64()
+func (b Blob) Len() int {
+	return b.b.Get("size").Int()
 }
 
 func (b Blob) Type() string {
@@ -47,7 +47,7 @@ func (f File) Name() string {
 }
 
 type FileReader struct {
-	f            File
+	File
 	fr           *js.Object
 	offset, size int64
 }
@@ -57,7 +57,7 @@ func NewFileReader(f File) *FileReader {
 		f,
 		js.Global.Get("FileReader").New(),
 		0,
-		f.Size(),
+		int65(f.Len()),
 	}
 }
 
