@@ -57,7 +57,7 @@ func NewFileReader(f File) *FileReader {
 		f,
 		js.Global.Get("FileReader").New(),
 		0,
-		int65(f.Len()),
+		int64(f.Len()),
 	}
 }
 
