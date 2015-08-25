@@ -6,7 +6,14 @@ import (
 	"honnef.co/go/js/dom"
 )
 
-const css = `.mw-overlay {
+const css = `
+window, body {
+	width : 100%;
+	margin : 0;
+	overflow-x : hidden;
+}
+
+.mw-overlay {
 	position : fixed;
 	top : 0;
 	left : 0;
