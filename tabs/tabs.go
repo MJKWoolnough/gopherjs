@@ -1,24 +1,19 @@
 package tabs
 
 import (
+	"github.com/MJKWoolnough/gopherjs/style"
 	"github.com/MJKWoolnough/gopherjs/xjs"
 	"honnef.co/go/js/dom"
 )
 
-type Tab struct {
-	Name string
-	Func func(dom.Element)
-}
-
-func MakeStyle() *dom.HTMLStyleElement {
-	s := xjs.CreateElement("style").(*dom.HTMLStyleElement)
-	s.SetTextContent(`.tabs {
+const css = `.tabs {
 	line-height : 24px;
 	position : relative;
 	width : 100%;
 	overflow : hidden;
 	margin : 0;
 	padding : 0 0 0 20px;
+	z-index : 0;
 }
 
 .tabs:after {
@@ -101,8 +96,15 @@ func MakeStyle() *dom.HTMLStyleElement {
 .tabs + .content {
 	margin-top : 10px;
 	padding : 10px;
-}`)
-	return s
+}`
+
+func init() {
+	style.Add(css)
+}
+
+type Tab struct {
+	Name string
+	Func func(dom.Element)
 }
 
 func MakeTabs(t []Tab) dom.Node {
