@@ -19,24 +19,24 @@ window, body {
 	left : 0;
 	right : 0;
 	bottom : 0;
-	background : rgba(0, 0, 0, 0.25);
+	background-color : rgba(0, 0, 0, 0.25);
 }
 
-.mw-overlay > * {
+.mw-overlay > *:not(.closer) {
 	position : absolute;
 	top : 10px;
 	left : 10px;
 	right : 10px;
-	background : #fff;
+	background-color : #fff;
 }
 
-.mw-overlay .closer {
+.mw-overlay > .closer {
 	color : #fff;
 	font-family : serif;
-	right : 2px;
+	right : 12px;
 	position : absolute;
 	text-shadow : #000 -1px -1px 0, #000 1px -1px 0, #000 1px 1px 0, #000 -1px 1px 0, #000 -1px 0 0, #000 1px 0 0;
-	top : 0;
+	top : 10px;
 	transition : color 0.25s;
 	transition-timing-function : ease;
 	user-select : none;
@@ -45,10 +45,15 @@ window, body {
 	-webkit-user-select : none;
 }
 
-.mw-overlay .closer:hover {
+.mw-overlay > .closer:hover {
 	color : #f00;
 	cursor : pointer;	
-}`
+}
+
+* > .mw-overlay:not(:last-of-type) {
+	background-color : transparent;
+}
+`
 
 func init() {
 	style.Add(css)
@@ -66,7 +71,7 @@ func Overlay(e dom.Element) dom.Element {
 			p.RemoveChild(o)
 		}
 	})
-	e.InsertBefore(c, e.FirstChild())
+	o.AppendChild(c)
 	o.AppendChild(e)
 	return o
 }
