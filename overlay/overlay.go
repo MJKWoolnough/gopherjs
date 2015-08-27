@@ -1,6 +1,8 @@
 package overlay
 
 import (
+	"io"
+
 	"github.com/MJKWoolnough/gopherjs/style"
 	"github.com/MJKWoolnough/gopherjs/xjs"
 	"honnef.co/go/js/dom"
@@ -59,19 +61,25 @@ func init() {
 	style.Add(css)
 }
 
-type Overlay struct {
+type Overlay interface {
+	dom.Element
+	io.Closer
+}
+
+type overlay struct {
 	dom.Element
 }
 
-func (o Overlay) Close() {
+func (o overlay) Close() error {
 	p := o.ParentNode()
 	if p != nil {
 		p.RemoveChild(o)
 	}
+	return nil
 }
 
-func New(e dom.Element) dom.Element {
-	o := Overlay{xjs.CreateElement("div")}
+func New(e dom.Element) Overlay {
+	o := overlay{xjs.CreateElement("div")}
 	o.SetAttribute("class", "mw-overlay")
 	c := xjs.CreateElement("div")
 	xjs.SetInnerText(c, "X")
