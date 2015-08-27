@@ -59,17 +59,25 @@ func init() {
 	style.Add(css)
 }
 
-func Overlay(e dom.Element) dom.Element {
-	o := xjs.CreateElement("div")
+type Overlay struct {
+	dom.Element
+}
+
+func (o Overlay) Close() {
+	p := o.ParentNode()
+	if p != nil {
+		p.RemoveChild(o)
+	}
+}
+
+func New(e dom.Element) dom.Element {
+	o := Overlay{xjs.CreateElement("div")}
 	o.SetAttribute("class", "mw-overlay")
 	c := xjs.CreateElement("div")
 	xjs.SetInnerText(c, "X")
 	c.SetAttribute("class", "closer")
 	c.AddEventListener("click", false, func(dom.Event) {
-		p := o.ParentNode()
-		if p != nil {
-			p.RemoveChild(o)
-		}
+		o.Close()
 	})
 	o.AppendChild(c)
 	o.AppendChild(e)
