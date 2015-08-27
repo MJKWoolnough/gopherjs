@@ -64,22 +64,31 @@ func init() {
 type Overlay interface {
 	dom.Element
 	io.Closer
+	OnClose(func())
 }
 
 type overlay struct {
 	dom.Element
+	onClose []func()
+}
+
+func (o overlay) OnClose(f func()) {
+	o.onClose = append(o.onClose, f)
 }
 
 func (o overlay) Close() error {
 	p := o.ParentNode()
 	if p != nil {
 		p.RemoveChild(o)
+		for _, f := range o.onClose {
+			f()
+		}
 	}
 	return nil
 }
 
 func New(e dom.Element) Overlay {
-	o := overlay{xjs.CreateElement("div")}
+	o := overlay{Element: xjs.CreateElement("div")}
 	o.SetAttribute("class", "mw-overlay")
 	c := xjs.CreateElement("div")
 	xjs.SetInnerText(c, "X")
