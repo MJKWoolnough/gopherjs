@@ -95,7 +95,7 @@ const css = `.tabs {
 
 .tabs + .content {
 	margin-top : 10px;
-	padding : 10px;
+	padding : 10px 0 0 0;
 }`
 
 func init() {
