@@ -1,6 +1,7 @@
 package xjs
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/gopherjs/gopherjs/js"
@@ -37,4 +38,8 @@ func SetPreText(node dom.Node, text string) dom.Node {
 
 func CreateElement(name string) dom.Element {
 	return dom.GetWindow().Document().CreateElement(name)
+}
+
+func Alert(format string, params ...interface{}) {
+	dom.GetWindow().Alert(fmt.Sprintf(format, params...))
 }
