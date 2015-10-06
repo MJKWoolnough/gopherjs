@@ -102,11 +102,15 @@ func init() {
 	style.Add(css)
 }
 
+// Tab represents a tab in a menu
 type Tab struct {
+	// The name of the Tab
 	Name string
+	// Func to run when the tab is selected
 	Func func(dom.Element)
 }
 
+// MakeTabs takes a list of tabs and generates a tabbed interface, which is return as a document fragment
 func MakeTabs(t []Tab) dom.Node {
 	f := xjs.DocumentFragment()
 	if len(t) < 0 {
