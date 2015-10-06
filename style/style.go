@@ -1,3 +1,4 @@
+// Package style implements a simple way to handle styling in an HTML document
 package style
 
 import (
@@ -5,6 +6,7 @@ import (
 	"honnef.co/go/js/dom"
 )
 
+// Add adds the given CSS string to the DOM
 func Add(css string) dom.Element {
 	h := dom.GetWindow().Document().GetElementsByTagName("head")
 	if len(h) == 0 {
