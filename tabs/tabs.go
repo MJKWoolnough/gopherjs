@@ -1,3 +1,4 @@
+// Package tabs implements a simple tab interface for HTML documents
 package tabs
 
 import (
