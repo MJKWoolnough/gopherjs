@@ -1,3 +1,4 @@
+// Package xjs provides some simple, but often needed shortcut funcs for gopherJS
 package xjs
 
 import (
@@ -8,10 +9,12 @@ import (
 	"honnef.co/go/js/dom"
 )
 
+// DocumentFragment returns a new DocumentFragment as a dom.Node
 func DocumentFragment() dom.Node {
 	return dom.WrapNode(js.Global.Get("document").Call("createDocumentFragment"))
 }
 
+// RemoveChildren removes all of the child nodes of the node given
 func RemoveChildren(node dom.Node) dom.Node {
 	for node.HasChildNodes() {
 		node.RemoveChild(node.LastChild())
@@ -19,12 +22,15 @@ func RemoveChildren(node dom.Node) dom.Node {
 	return node
 }
 
+// SetInnerText removes all child nodes from the given node and sets a single
+// Text Node with the given string
 func SetInnerText(node dom.Node, text string) dom.Node {
 	RemoveChildren(node)
 	node.AppendChild(dom.GetWindow().Document().CreateTextNode(text))
 	return node
 }
 
+// SetPreText does similar to SetInnerText, but linebreaks are converted to <br />s
 func SetPreText(node dom.Node, text string) dom.Node {
 	RemoveChildren(node)
 	for n, part := range strings.Split(text, "\n") {
@@ -36,10 +42,12 @@ func SetPreText(node dom.Node, text string) dom.Node {
 	return node
 }
 
+// CreateElement is a shortcut to create an element with the given name
 func CreateElement(name string) dom.Element {
 	return dom.GetWindow().Document().CreateElement(name)
 }
 
+// Alert provides for formated alert boxes
 func Alert(format string, params ...interface{}) {
 	dom.GetWindow().Alert(fmt.Sprintf(format, params...))
 }
