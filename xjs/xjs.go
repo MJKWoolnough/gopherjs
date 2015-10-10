@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gopherjs/gopherjs/js"
 	"honnef.co/go/js/dom"
 )
 
+var docNode = dom.GetWindow().Document()
+
 // DocumentFragment returns a new DocumentFragment as a dom.Node
 func DocumentFragment() dom.Node {
-	return dom.WrapNode(js.Global.Get("document").Call("createDocumentFragment"))
+	return docNode.Underlying().Call("createDocumentFragment")
 }
 
 // RemoveChildren removes all of the child nodes of the node given
@@ -26,7 +27,7 @@ func RemoveChildren(node dom.Node) dom.Node {
 // Text Node with the given string
 func SetInnerText(node dom.Node, text string) dom.Node {
 	RemoveChildren(node)
-	node.AppendChild(dom.GetWindow().Document().CreateTextNode(text))
+	node.AppendChild(docNode.CreateTextNode(text))
 	return node
 }
 
@@ -37,7 +38,7 @@ func SetPreText(node dom.Node, text string) dom.Node {
 		if n > 0 {
 			node.AppendChild(CreateElement("br"))
 		}
-		node.AppendChild(dom.GetWindow().Document().CreateTextNode(part))
+		node.AppendChild(TextNode(part))
 	}
 	return node
 }
