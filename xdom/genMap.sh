@@ -19,16 +19,16 @@
 		fi;
 		cElement="${element^}";
 		echo "";
+		echo -n "// $cElement returns a \"$element\" element with type "
 		if [ -z "$interface" ]; then
-			echo "// $cElement returns an $element with type dom.Element";
+			echo "dom.Element";
 			echo "func $cElement() dom.Element {";
 			echo "	return xjs.CreateElement(\"$element\")";
-			echo "}"
 		else 
-			echo "// $cElement returns an $element with type *dom.$interface";
+			echo "*dom.$interface";
 			echo "func $cElement() *dom.$interface {";
 			echo "	return xjs.CreateElement(\"$element\").(*dom.$interface)";
-			echo "}"
 		fi;
+		echo "}"
 	done < map.gen
 ) > elements.go
