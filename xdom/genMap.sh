@@ -12,23 +12,21 @@
 	echo ")";
 
 	while read element; do
-		interface="";
+		interface="dom.Element";
 		if [ -z "${element/*:*/}" ]; then
-			interface="HTML${element#*:}Element";
+			interface="*dom.HTML${element#*:}Element";
 			element="${element%:*}";
 		fi;
 		cElement="${element^}";
 		echo "";
-		echo -n "// $cElement returns a \"$element\" element with type "
-		if [ -z "$interface" ]; then
-			echo "dom.Element";
-			echo "func $cElement() dom.Element {";
-			echo "	return xjs.CreateElement(\"$element\")";
-		else 
-			echo "*dom.$interface";
-			echo "func $cElement() *dom.$interface {";
-			echo "	return xjs.CreateElement(\"$element\").(*dom.$interface)";
+		echo "// $cElement returns a \"$element\" element with type $interface"
+		echo "func $cElement() $interface {";
+		echo -n "	return xjs.CreateElement(\"$element\")";
+		if [ "$interface" == "dom.Element" ]; then
+			echo;
+		else
+			echo ".($interface)";
 		fi;
-		echo "}"
-	done < map.gen
+		echo "}";
+	done < "map.gen";
 ) > elements.go
