@@ -27,7 +27,7 @@ func RemoveChildren(node dom.Node) dom.Node {
 // Text Node with the given string
 func SetInnerText(node dom.Node, text string) dom.Node {
 	RemoveChildren(node)
-	node.AppendChild(docNode.CreateTextNode(text))
+	node.AppendChild(TextNode(text))
 	return node
 }
 
@@ -51,4 +51,9 @@ func CreateElement(name string) dom.Element {
 // Alert provides for formated alert boxes
 func Alert(format string, params ...interface{}) {
 	dom.GetWindow().Alert(fmt.Sprintf(format, params...))
+}
+
+// TextNode creates a text node containing the givin text
+func TextNode(text string) *dom.Text {
+	return docNode.CreateTextNode(text)
 }
