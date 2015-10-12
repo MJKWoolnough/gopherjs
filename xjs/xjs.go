@@ -27,7 +27,7 @@ func RemoveChildren(node dom.Node) dom.Node {
 // Text Node with the given string
 func SetInnerText(node dom.Node, text string) dom.Node {
 	RemoveChildren(node)
-	node.AppendChild(TextNode(text))
+	node.AppendChild(Text(text))
 	return node
 }
 
@@ -38,7 +38,7 @@ func SetPreText(node dom.Node, text string) dom.Node {
 		if n > 0 {
 			node.AppendChild(CreateElement("br"))
 		}
-		node.AppendChild(TextNode(part))
+		node.AppendChild(Text(part))
 	}
 	return node
 }
@@ -54,6 +54,6 @@ func Alert(format string, params ...interface{}) {
 }
 
 // TextNode creates a text node containing the givin text
-func TextNode(text string) *dom.Text {
+func Text(text string) *dom.Text {
 	return docNode.CreateTextNode(text)
 }
