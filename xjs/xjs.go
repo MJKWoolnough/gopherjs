@@ -57,3 +57,15 @@ func Alert(format string, params ...interface{}) {
 func Text(text string) *dom.Text {
 	return docNode.CreateTextNode(text)
 }
+
+// AppendChildren appends all the given children to the parent.
+//
+// It uses a DocumentFragment to avoid multiple paint updates to a page
+func AppendChildren(parent dom.Node, children ...dom.Node) dom.Node {
+	frag := DocumentFragment()
+	for _, child := range children {
+		p.AppendChild(child)
+	}
+	parent.AppendChild(frag)
+	return parent
+}
