@@ -12,7 +12,7 @@ var docNode = dom.GetWindow().Document()
 
 // DocumentFragment returns a new DocumentFragment as a dom.Node
 func DocumentFragment() dom.Node {
-	return docNode.Underlying().Call("createDocumentFragment")
+	return dom.WrapNode(docNode.Underlying().Call("createDocumentFragment"))
 }
 
 // RemoveChildren removes all of the child nodes of the node given
@@ -62,10 +62,8 @@ func Text(text string) *dom.Text {
 //
 // It uses a DocumentFragment to avoid multiple paint updates to a page
 func AppendChildren(parent dom.Node, children ...dom.Node) dom.Node {
-	frag := DocumentFragment()
 	for _, child := range children {
-		p.AppendChild(child)
+		parent.AppendChild(child)
 	}
-	parent.AppendChild(frag)
 	return parent
 }
