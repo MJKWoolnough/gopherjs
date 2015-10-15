@@ -1,3 +1,4 @@
+// Package files turns javascript files into io.Reader's
 package files
 
 import (
@@ -10,48 +11,59 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 )
 
+// Blob is a wrapped javascript blob
 type Blob struct {
 	b *js.Object
 }
 
+// NewBlob wraps a javascript blob
 func NewBlob(b *js.Object) Blob {
 	return Blob{b}
 }
 
+// Len returns the length of the blob
 func (b Blob) Len() int {
 	return b.b.Get("size").Int()
 }
 
+// Type returns the type of the blob
 func (b Blob) Type() string {
 	return b.b.Get("type").String()
 }
 
+// Slice returns a new blob sliced with the given indicies
 func (b Blob) Slice(i, j int) Blob {
 	return NewBlob(b.b.Call("slice", i, j))
 }
 
+// File wraps a Blob
 type File struct {
 	Blob
 }
 
+// NewFile wraps a javascript File to access
 func NewFile(f *dom.File) File {
 	return File{NewBlob(f.Object)}
 }
 
+// LastModifiedDate returns the last modified time for the file
 func (f File) LastModifiedDate() time.Time {
 	return f.b.Get("lastModifiedDate").Interface().(time.Time)
 }
 
+// Name returns the files name
 func (f File) Name() string {
 	return f.b.Get("name").String()
 }
 
+// FileReader wraps a File to allow for reading
 type FileReader struct {
 	File
 	fr           *js.Object
 	offset, size int64
 }
 
+// NewFileReader opens a File for reading
 func NewFileReader(f File) *FileReader {
 	return &FileReader{
 		f,
@@ -61,17 +73,20 @@ func NewFileReader(f File) *FileReader {
 	}
 }
 
+// Close implements the io.Closer interface
 func (fr *FileReader) Close() error {
 	fr.fr = nil
 	return nil
 }
 
+// Read implements the io.Reader interface
 func (fr *FileReader) Read(b []byte) (int, error) {
 	n, err := fr.ReadAt(b, int64(fr.offset))
 	fr.offset += int64(n)
 	return n, err
 }
 
+//ReadAt implements the io.ReaderAt interface
 func (fr *FileReader) ReadAt(b []byte, off int64) (int, error) {
 	if fr.fr == nil {
 		return 0, ErrClosed
@@ -108,6 +123,7 @@ func (fr *FileReader) ReadAt(b []byte, off int64) (int, error) {
 	return r.size, r.err
 }
 
+// Seek implements the io.Seeker interface
 func (fr *FileReader) Seek(offset int64, whence int) (int64, error) {
 	if fr.fr == nil {
 		return 0, ErrClosed
