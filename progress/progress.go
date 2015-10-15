@@ -34,8 +34,8 @@ func (p *ProgressBar) draw() {
 
 func New(fore, back color.Color, width, height int) *ProgressBar {
 	c := xjs.CreateElement("canvas").(*dom.HTMLCanvasElement)
-	c.SetAttribute("width", strconv.Itoa(width))
-	c.SetAttribute("height", strconv.Itoa(height))
+	c.Width = width
+	c.Height = height
 	r, g, b, _ := fore.RGBA()
 	foreground := "rgb(" + strconv.Itoa(int(r>>8)) + ", " + strconv.Itoa(int(g>>8)) + ", " + strconv.Itoa(int(b>>8)) + ")"
 	r, g, b, _ = back.RGBA()
