@@ -553,9 +553,9 @@ func Tbody() *dom.HTMLTableSectionElement {
 	return xjs.CreateElement("tbody").(*dom.HTMLTableSectionElement)
 }
 
-// Td returns a "td" element with type *dom.HTMLTableDataCellElement
-func Td() *dom.HTMLTableDataCellElement {
-	return xjs.CreateElement("td").(*dom.HTMLTableDataCellElement)
+// Td returns a "td" element with type *dom.HTMLTableCellElement
+func Td() *dom.HTMLTableCellElement {
+	return xjs.CreateElement("td").(*dom.HTMLTableCellElement)
 }
 
 // Template returns a "template" element with type dom.Element
@@ -573,9 +573,9 @@ func Tfoot() *dom.HTMLTableSectionElement {
 	return xjs.CreateElement("tfoot").(*dom.HTMLTableSectionElement)
 }
 
-// Th returns a "th" element with type *dom.HTMLTableHeaderCellElement
-func Th() *dom.HTMLTableHeaderCellElement {
-	return xjs.CreateElement("th").(*dom.HTMLTableHeaderCellElement)
+// Th returns a "th" element with type *dom.HTMLTableCellElement
+func Th() *dom.HTMLTableCellElement {
+	return xjs.CreateElement("th").(*dom.HTMLTableCellElement)
 }
 
 // Thead returns a "thead" element with type *dom.HTMLTableSectionElement
