@@ -11,11 +11,11 @@ import (
 	"honnef.co/go/js/dom"
 )
 
-// ProgressBar is a wrapper around a Canvas element to draw a simple progress
+// Bar is a wrapper around a Canvas element to draw a simple progress
 // bar.
 //
 // It also implements dom.Node, so it can be Appended to any other node.
-type ProgressBar struct {
+type Bar struct {
 	*dom.HTMLCanvasElement
 	percent                int
 	ctx                    *dom.CanvasRenderingContext2D
@@ -24,22 +24,22 @@ type ProgressBar struct {
 }
 
 // Percent sets the current percentage shown
-func (p *Bar) Percent(i int) {
-	if i != p.percent {
-		p.percent = i
-		p.draw()
+func (b *Bar) Percent(i int) {
+	if i != b.percent {
+		b.percent = i
+		b.draw()
 	}
 }
 
-func (p *ProgressBar) draw() {
-	p.ctx.FillStyle = p.background
-	p.ctx.FillRect(0, 0, p.width, p.height)
-	p.ctx.FillStyle = p.foreground
-	p.ctx.FillRect(0, 0, p.width*p.percent/100, p.height)
+func (b *Bar) draw() {
+	b.ctx.FillStyle = b.background
+	b.ctx.FillRect(0, 0, b.width, b.height)
+	b.ctx.FillStyle = b.foreground
+	b.ctx.FillRect(0, 0, b.width*b.percent/100, b.height)
 }
 
-// New returns a new ProgressBar
-func New(fore, back color.Color, width, height int) *ProgressBar {
+// New returns a new Bar
+func New(fore, back color.Color, width, height int) *Bar {
 	c := xdom.Canvas()
 	c.Width = width
 	c.Height = height
@@ -47,7 +47,7 @@ func New(fore, back color.Color, width, height int) *ProgressBar {
 	foreground := "rgb(" + strconv.Itoa(int(r>>8)) + ", " + strconv.Itoa(int(g>>8)) + ", " + strconv.Itoa(int(b>>8)) + ")"
 	r, g, b, _ = back.RGBA()
 	background := "rgb(" + strconv.Itoa(int(r>>8)) + ", " + strconv.Itoa(int(g>>8)) + ", " + strconv.Itoa(int(b>>8)) + ")"
-	pb := &ProgressBar{
+	bar := &Bar{
 		HTMLCanvasElement: c,
 		ctx:               c.GetContext2d(),
 		width:             width,
@@ -55,32 +55,32 @@ func New(fore, back color.Color, width, height int) *ProgressBar {
 		foreground:        foreground,
 		background:        background,
 	}
-	pb.draw()
-	return pb
+	bar.draw()
+	return bar
 }
 
 // ProgressReader wraps a ProgressBar to automatically update when an io.Reader
 // is read
-type ProgressReader struct {
-	*ProgressBar
+type Reader struct {
+	*Bar
 	io.Reader
 	offset, size int
 }
 
 // Reader returns a ProgressReader
-func (p *ProgressBar) Reader(r io.Reader, size int) *ProgressReader {
-	return &ProgressReader{p, r, 0, size}
+func (b *Bar) Reader(r io.Reader, size int) *Reader {
+	return &Reader{b, r, 0, size}
 }
 
 // Read implements io.Reader
-func (pr *ProgressReader) Read(p []byte) (int, error) {
-	n, err := pr.Reader.Read(p)
-	pr.offset += n
-	pr.Percent(100 * pr.offset / pr.size)
+func (r *Reader) Read(p []byte) (int, error) {
+	n, err := r.Reader.Read(p)
+	r.offset += n
+	r.Percent(100 * r.offset / r.size)
 	return n, err
 }
 
 // Len returns the total length of the data
-func (pr *ProgressReader) Len() int {
-	return int(pr.size)
+func (r *Reader) Len() int {
+	return int(r.size)
 }
