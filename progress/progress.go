@@ -5,7 +5,7 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/MJKWoolnough/gopherjs/xjs"
+	"github.com/MJKWoolnough/gopherjs/xdom"
 
 	"honnef.co/go/js/dom"
 )
@@ -33,7 +33,7 @@ func (p *ProgressBar) draw() {
 }
 
 func New(fore, back color.Color, width, height int) *ProgressBar {
-	c := xjs.CreateElement("canvas").(*dom.HTMLCanvasElement)
+	c := xdom.Canvas()
 	c.Width = width
 	c.Height = height
 	r, g, b, _ := fore.RGBA()
