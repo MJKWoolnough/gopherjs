@@ -1,3 +1,4 @@
+// Package progress creates a simple progress bar in javascript
 package progress
 
 import (
@@ -10,6 +11,10 @@ import (
 	"honnef.co/go/js/dom"
 )
 
+// ProgressBar is a wrapper around a Canvas element to draw a simple progress
+// bar.
+//
+// It also implements dom.Node, so it can be Appended to any other node.
 type ProgressBar struct {
 	*dom.HTMLCanvasElement
 	percent                int
@@ -18,7 +23,8 @@ type ProgressBar struct {
 	foreground, background string
 }
 
-func (p *ProgressBar) Percent(i int) {
+// Percent sets the current percentage shown
+func (p *Bar) Percent(i int) {
 	if i != p.percent {
 		p.percent = i
 		p.draw()
@@ -32,6 +38,7 @@ func (p *ProgressBar) draw() {
 	p.ctx.FillRect(0, 0, p.width*p.percent/100, p.height)
 }
 
+// New returns a new ProgressBar
 func New(fore, back color.Color, width, height int) *ProgressBar {
 	c := xdom.Canvas()
 	c.Width = width
@@ -52,16 +59,20 @@ func New(fore, back color.Color, width, height int) *ProgressBar {
 	return pb
 }
 
+// ProgressReader wraps a ProgressBar to automatically update when an io.Reader
+// is read
 type ProgressReader struct {
 	*ProgressBar
 	io.Reader
 	offset, size int
 }
 
+// Reader returns a ProgressReader
 func (p *ProgressBar) Reader(r io.Reader, size int) *ProgressReader {
 	return &ProgressReader{p, r, 0, size}
 }
 
+// Read implements io.Reader
 func (pr *ProgressReader) Read(p []byte) (int, error) {
 	n, err := pr.Reader.Read(p)
 	pr.offset += n
@@ -69,6 +80,7 @@ func (pr *ProgressReader) Read(p []byte) (int, error) {
 	return n, err
 }
 
+// Len returns the total length of the data
 func (pr *ProgressReader) Len() int {
 	return int(pr.size)
 }
