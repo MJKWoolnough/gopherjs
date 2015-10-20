@@ -1,8 +1,7 @@
+// Package overlay creates a simple 'window' overlay system for gopherjs
 package overlay
 
 import (
-	"io"
-
 	"github.com/MJKWoolnough/gopherjs/style"
 	"github.com/MJKWoolnough/gopherjs/xjs"
 	"honnef.co/go/js/dom"
@@ -61,22 +60,19 @@ func init() {
 	style.Add(css)
 }
 
-type Overlay interface {
-	dom.Element
-	io.Closer
-	OnClose(func())
-}
-
-type overlay struct {
+// Overlay is a dom.Element which
+type Overlay struct {
 	dom.Element
 	onClose []func()
 }
 
-func (o *overlay) OnClose(f func()) {
+// OnClose adds an onClose handler for the overlay
+func (o *Overlay) OnClose(f func()) {
 	o.onClose = append(o.onClose, f)
 }
 
-func (o *overlay) Close() error {
+// Close closes the overlay, and runs any given onClose handle funcs
+func (o *Overlay) Close() error {
 	p := o.ParentNode()
 	if p != nil {
 		p.RemoveChild(o)
@@ -87,8 +83,9 @@ func (o *overlay) Close() error {
 	return nil
 }
 
-func New(e dom.Element) Overlay {
-	o := &overlay{Element: xjs.CreateElement("div")}
+// New wraps a dom.Element in an Overlay
+func New(e dom.Element) *Overlay {
+	o := &Overlay{Element: xjs.CreateElement("div")}
 	o.SetAttribute("class", "mw-overlay")
 	c := xjs.CreateElement("div")
 	xjs.SetInnerText(c, "X")
