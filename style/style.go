@@ -2,6 +2,7 @@
 package style
 
 import (
+	"github.com/MJKWoolnough/gopherjs/xdom"
 	"github.com/MJKWoolnough/gopherjs/xjs"
 	"honnef.co/go/js/dom"
 )
@@ -12,8 +13,7 @@ func Add(css string) dom.Element {
 	if len(h) == 0 {
 		return nil
 	}
-	s := xjs.CreateElement("style")
-	xjs.SetInnerText(s, css)
-	h[0].AppendChild(s)
+	s := xdom.Style()
+	h[0].AppendChild(xjs.SetInnerText(s, css))
 	return s
 }
