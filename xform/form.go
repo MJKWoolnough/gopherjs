@@ -116,6 +116,12 @@ func InputRadio(id, name string, value bool) *dom.HTMLInputElement {
 	return i
 }
 
+func InputUpload(id string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "file"
+	return i
+}
+
 type Option struct {
 	Label, Value string
 }
