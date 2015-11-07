@@ -134,7 +134,7 @@ func MakeTabs(t []Tab) dom.Node {
 				for _, tab := range tabs {
 					tab.Class().Remove("selected")
 				}
-				newContents := contents.CloneNode(false).(dom.Element)
+				newContents := contents.CloneNode(false).(*dom.HTMLDivElement)
 				contents.ParentNode().ReplaceChild(newContents, contents)
 				contents = newContents
 				tabs[i].Class().Add("selected")
