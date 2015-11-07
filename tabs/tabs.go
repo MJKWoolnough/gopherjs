@@ -3,6 +3,7 @@ package tabs
 
 import (
 	"github.com/MJKWoolnough/gopherjs/style"
+	"github.com/MJKWoolnough/gopherjs/xdom"
 	"github.com/MJKWoolnough/gopherjs/xjs"
 	"honnef.co/go/js/dom"
 )
@@ -117,13 +118,13 @@ func MakeTabs(t []Tab) dom.Node {
 	if len(t) < 0 {
 		return f
 	}
-	tabsDiv := xjs.CreateElement("div")
-	contents := xjs.CreateElement("div")
+	tabsDiv := xdom.Div()
+	contents := xdom.Div()
 	tabsDiv.Class().SetString("tabs")
 	contents.Class().SetString("content")
 	tabs := make([]dom.Element, len(t))
 	for n := range t {
-		tabs[n] = xjs.SetInnerText(xjs.CreateElement("div"), t[n].Name).(dom.Element)
+		tabs[n] = xjs.SetInnerText(xdom.Div(), t[n].Name).(dom.Element)
 		tabs[n].AddEventListener("click", false, func() func(dom.Event) {
 			i := n
 			return func(e dom.Event) {
