@@ -64,8 +64,6 @@ func Text(text string) *dom.Text {
 }
 
 // AppendChildren appends all the given children to the parent.
-//
-// It uses a DocumentFragment to avoid multiple paint updates to a page
 func AppendChildren(parent dom.Node, children ...dom.Node) dom.Node {
 	for _, child := range children {
 		parent.AppendChild(child)
