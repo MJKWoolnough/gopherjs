@@ -21,8 +21,6 @@ label:after {
 
 .sizeableInput {
 	border : 2px inset #DCDAD5;
-	display : block;
-	float : left;
 	padding-left : 3px;
 	padding-right : 3px;
 	min-width : 50px;
@@ -36,6 +34,7 @@ func InputSizeable(id, value string) *dom.HTMLSpanElement {
 	s := xdom.Span()
 	s.Class().SetString("sizeableInput")
 	s.SetContentEditable("true")
+	s.Set("spellcheck", "false")
 	if id != "" {
 		s.SetID(id)
 	}
