@@ -19,13 +19,23 @@ label:after {
 	content : ':';
 }
 
-.sizeableInput {` + dom.GetWindow().Document().(dom.HTMLDocument).DefaultView().GetComputedStyle(xdom.Input(), "").String() + `}
+.sizeableInput {
+	border : 2px inset #DCDAD5;
+	display : block;
+	float : left;
+	padding-left : 3px;
+	padding-right : 3px;
+	min-width : 50px;
+	height : 20px;
+	margin-top : 2px;
+}
 `)
 }
 
 func InputSizeable(id, value string) *dom.HTMLSpanElement {
 	s := xdom.Span()
 	s.Class().SetString("sizeableInput")
+	s.SetContentEditable("true")
 	if id != "" {
 		s.SetID(id)
 	}
@@ -51,14 +61,16 @@ func InputSizeableList(values ...string) *SizeableList {
 		d,
 		contents,
 	}
-	remove := xdom.Button()
+	remove := xdom.Input()
+	remove.Type = "button"
 	remove.Value = "-"
 	remove.AddEventListener("click", false, func(dom.Event) {
 		l := len(sl.contents) - 1
 		d.RemoveChild(sl.contents[l])
 		sl.contents = sl.contents[:l]
 	})
-	add := xdom.Button()
+	add := xdom.Input()
+	add.Type = "button"
 	add.Value = "+"
 	add.AddEventListener("click", false, func(dom.Event) {
 		s := InputSizeable("", "")
