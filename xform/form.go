@@ -131,6 +131,7 @@ func InputSubmit(name string) *dom.HTMLInputElement {
 
 type Option struct {
 	Label, Value string
+	Selected     bool
 }
 
 func SelectBox(id string, values ...Option) *dom.HTMLSelectElement {
@@ -138,9 +139,14 @@ func SelectBox(id string, values ...Option) *dom.HTMLSelectElement {
 	if id != "" {
 		s.SetID(id)
 	}
+	selected := false
 	for _, v := range values {
 		o := xdom.Option()
 		o.Value = v.Value
+		if v.Selected && !selected {
+			selected = true
+			o.Selected = true
+		}
 		s.AppendChild(xjs.SetInnerText(o, v.Label))
 	}
 	return s
