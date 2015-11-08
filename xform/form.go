@@ -122,6 +122,13 @@ func InputUpload(id string) *dom.HTMLInputElement {
 	return i
 }
 
+func InputSubmit(name string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "submit"
+	i.Value = name
+	return i
+}
+
 type Option struct {
 	Label, Value string
 }
