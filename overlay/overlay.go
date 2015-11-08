@@ -84,7 +84,7 @@ func (o *Overlay) Close() error {
 }
 
 // New wraps a dom.Element in an Overlay
-func New(e dom.Element) *Overlay {
+func New(e dom.Node) *Overlay {
 	o := &Overlay{Element: xjs.CreateElement("div")}
 	o.SetAttribute("class", "mw-overlay")
 	c := xjs.CreateElement("div")
