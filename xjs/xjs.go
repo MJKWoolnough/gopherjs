@@ -10,6 +10,11 @@ import (
 
 var docNode = dom.GetWindow().Document()
 
+// Get the document's body element
+func Body() dom.HTMLElement {
+	return docNode.(dom.HTMLDocument).Body()
+}
+
 // DocumentFragment returns a new DocumentFragment as a dom.Node
 func DocumentFragment() dom.Node {
 	return dom.WrapNode(docNode.Underlying().Call("createDocumentFragment"))
