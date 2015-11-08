@@ -61,17 +61,13 @@ func InputSizeableList(values ...string) *SizeableList {
 		d,
 		contents,
 	}
-	remove := xdom.Input()
-	remove.Type = "button"
-	remove.Value = "-"
+	remove := InputButton("-")
 	remove.AddEventListener("click", false, func(dom.Event) {
 		l := len(sl.contents) - 1
 		d.RemoveChild(sl.contents[l])
 		sl.contents = sl.contents[:l]
 	})
-	add := xdom.Input()
-	add.Type = "button"
-	add.Value = "+"
+	add := InputButton("+")
 	add.AddEventListener("click", false, func(dom.Event) {
 		s := InputSizeable("", "")
 		d.InsertBefore(s, remove)
@@ -131,6 +127,13 @@ func InputRadio(id, name string, value bool) *dom.HTMLInputElement {
 func InputUpload(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "file"
+	return i
+}
+
+func InputButton(name string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "button"
+	i.Value = name
 	return i
 }
 
