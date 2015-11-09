@@ -235,11 +235,12 @@ func InputColor(id string) *dom.HTMLInputElement {
 	return i
 }
 
-func InputRange(id string, min, max, step float64) *dom.HTMLInputElement {
+func InputRange(id string, min, max, step, value float64) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "range"
 	i.Min = strconv.FormatFloat(min, 'f', -1, 64)
-	i.Max = strconv.FormatFloat(min, 'f', -1, 64)
+	i.Max = strconv.FormatFloat(max, 'f', -1, 64)
+	i.Value = strconv.FormatFloat(value, 'f', -1, 64)
 	if step != step {
 		i.Step = "all"
 	} else {
