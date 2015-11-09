@@ -1,6 +1,8 @@
 package xform
 
 import (
+	"strconv"
+
 	"github.com/MJKWoolnough/gopherjs/style"
 	"github.com/MJKWoolnough/gopherjs/xdom"
 	"github.com/MJKWoolnough/gopherjs/xjs"
@@ -60,13 +62,13 @@ func InputSizeableList(values ...string) *SizeableList {
 		d,
 		contents,
 	}
-	remove := InputButton("-")
+	remove := InputButton("", "-")
 	remove.AddEventListener("click", false, func(dom.Event) {
 		l := len(sl.contents) - 1
 		d.RemoveChild(sl.contents[l])
 		sl.contents = sl.contents[:l]
 	})
-	add := InputButton("+")
+	add := InputButton("", "+")
 	add.AddEventListener("click", false, func(dom.Event) {
 		s := InputSizeable("", "")
 		d.InsertBefore(s, remove)
@@ -126,13 +128,19 @@ func InputRadio(id, name string, value bool) *dom.HTMLInputElement {
 func InputUpload(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "file"
+	if id != "" {
+		i.SetID(id)
+	}
 	return i
 }
 
-func InputButton(name string) *dom.HTMLInputElement {
+func InputButton(id, name string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "button"
 	i.Value = name
+	if id != "" {
+		i.SetID(id)
+	}
 	return i
 }
 
@@ -140,6 +148,126 @@ func InputSubmit(name string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "submit"
 	i.Value = name
+	return i
+}
+
+func InputPassword(id, value string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "password"
+	i.Value = value
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputNumber(id string, min, max float64) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "number"
+	i.Min = strconv.FormatFloat(min, 'f', -1, 64)
+	i.Max = strconv.FormatFloat(min, 'f', -1, 64)
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputDate(id string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "date"
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputDateTime(id string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "datetime"
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputDateTimeLocal(id string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "datetime-local"
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputMonth(id string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "month"
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputWeek(id string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "week"
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputTime(id string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "time"
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputColor(id string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "color"
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputRange(id string, min, max, step float64) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "range"
+	i.Min = strconv.FormatFloat(min, 'f', -1, 64)
+	i.Max = strconv.FormatFloat(min, 'f', -1, 64)
+	if step != step {
+		i.Step = "all"
+	} else {
+		i.Step = strconv.FormatFloat(min, 'f', -1, 64)
+	}
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputEmail(id, value string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "email"
+	i.Value = value
+	if id != "" {
+		i.SetID(id)
+	}
+	return i
+}
+
+func InputURL(id, value string) *dom.HTMLInputElement {
+	i := xdom.Input()
+	i.Type = "url"
+	i.Value = value
+	if id != "" {
+		i.SetID(id)
+	}
 	return i
 }
 
