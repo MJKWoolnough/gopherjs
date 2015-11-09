@@ -21,6 +21,8 @@ window, body {
 	right : 0;
 	bottom : 0;
 	background-color : rgba(0, 0, 0, 0.25);
+	overflow-y : scroll;
+	overflow-x : hidden;
 }
 
 .mw-overlay > *:not(.closer) {
