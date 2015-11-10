@@ -1,3 +1,4 @@
+// Package xform provides some shortcut funcs for various form related activites
 package xform
 
 import (
@@ -32,6 +33,8 @@ label:after {
 `)
 }
 
+// InputSizeable returns a content-editable span that is style to look a text
+// input box
 func InputSizeable(id, value string) *dom.HTMLSpanElement {
 	s := xdom.Span()
 	s.Class().SetString("sizeableInput")
@@ -44,11 +47,13 @@ func InputSizeable(id, value string) *dom.HTMLSpanElement {
 	return s
 }
 
+// SizeableList is a collection of InputSizable elements
 type SizeableList struct {
 	*dom.HTMLDivElement
 	contents []*dom.HTMLSpanElement
 }
 
+// InputSizeableList creates a list of InputSizeable elements, wrapped in a div
 func InputSizeableList(values ...string) *SizeableList {
 	d := xdom.Div()
 	d.Class().SetString("sizeableList")
@@ -79,6 +84,7 @@ func InputSizeableList(values ...string) *SizeableList {
 	return sl
 }
 
+// Values returns the values of the enclose InputSizeable's
 func (s *SizeableList) Values() []string {
 	v := make([]string, len(s.contents))
 	for i, s := range s.contents {
@@ -87,6 +93,7 @@ func (s *SizeableList) Values() []string {
 	return v
 }
 
+// Label create a form label
 func Label(label, forID string) *dom.HTMLLabelElement {
 	l := xdom.Label()
 	l.For = forID
@@ -94,6 +101,7 @@ func Label(label, forID string) *dom.HTMLLabelElement {
 	return l
 }
 
+// InputText creates a text input box
 func InputText(id, value string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "text"
@@ -104,6 +112,7 @@ func InputText(id, value string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputCheckbox creates a checkbox input
 func InputCheckbox(id string, value bool) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "checkbox"
@@ -114,6 +123,7 @@ func InputCheckbox(id string, value bool) *dom.HTMLInputElement {
 	return i
 }
 
+// InputRadio create a radio button input
 func InputRadio(id, name string, value bool) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "radio"
@@ -125,6 +135,7 @@ func InputRadio(id, name string, value bool) *dom.HTMLInputElement {
 	return i
 }
 
+// InputUpload creates an upload input field
 func InputUpload(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "file"
@@ -134,6 +145,7 @@ func InputUpload(id string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputButton creates a button input
 func InputButton(id, name string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "button"
@@ -144,6 +156,7 @@ func InputButton(id, name string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputSubmit creates a submit input
 func InputSubmit(name string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "submit"
@@ -151,6 +164,7 @@ func InputSubmit(name string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputPassword creates a password input
 func InputPassword(id, value string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "password"
@@ -161,6 +175,7 @@ func InputPassword(id, value string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputNumber creates a text input that only allows number to be entered
 func InputNumber(id string, min, max float64) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "number"
@@ -172,6 +187,8 @@ func InputNumber(id string, min, max float64) *dom.HTMLInputElement {
 	return i
 }
 
+// InputDate create a date based input, the workings of which are implementation
+// specific
 func InputDate(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "date"
@@ -181,6 +198,8 @@ func InputDate(id string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputDateTime create a datetime based input, the workings of which are
+// implementation specific
 func InputDateTime(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "datetime"
@@ -190,6 +209,8 @@ func InputDateTime(id string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputDateTimeLocal create a local datetime based input, the workings of
+// which are implementation specific
 func InputDateTimeLocal(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "datetime-local"
@@ -199,6 +220,7 @@ func InputDateTimeLocal(id string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputMonth creates a month based input box
 func InputMonth(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "month"
@@ -208,6 +230,7 @@ func InputMonth(id string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputWeek creates a week based input box
 func InputWeek(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "week"
@@ -217,6 +240,7 @@ func InputWeek(id string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputTime creates a time based input box
 func InputTime(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "time"
@@ -226,6 +250,8 @@ func InputTime(id string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputColor creates a colour based input box, the workings of which are
+// implementation specific
 func InputColor(id string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "color"
@@ -235,6 +261,8 @@ func InputColor(id string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputRange creates a sliding rule with which a number in the given range
+// can be selected
 func InputRange(id string, min, max, step, value float64) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "range"
@@ -252,6 +280,7 @@ func InputRange(id string, min, max, step, value float64) *dom.HTMLInputElement 
 	return i
 }
 
+// InputEmail is a text box that validates as an email address
 func InputEmail(id, value string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "email"
@@ -262,6 +291,7 @@ func InputEmail(id, value string) *dom.HTMLInputElement {
 	return i
 }
 
+// InputURL is a text box that validates as a URL
 func InputURL(id, value string) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "url"
@@ -272,11 +302,13 @@ func InputURL(id, value string) *dom.HTMLInputElement {
 	return i
 }
 
+// Option is a structure to define a 'select's option.
 type Option struct {
 	Label, Value string
 	Selected     bool
 }
 
+// SelectBox provides a select input, filled with the given options
 func SelectBox(id string, values ...Option) *dom.HTMLSelectElement {
 	s := xdom.Select()
 	if id != "" {
@@ -295,6 +327,7 @@ func SelectBox(id string, values ...Option) *dom.HTMLSelectElement {
 	return s
 }
 
+// TextArea provides a textarea input
 func TextArea(id string, value string) *dom.HTMLTextAreaElement {
 	t := xdom.Textarea()
 	if id != "" {
