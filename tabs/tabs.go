@@ -143,7 +143,7 @@ func New(t []Tab) dom.Node {
 		}())
 		tabsDiv.AppendChild(tabs[n])
 	}
-	t[0].Func(contents)
+	go t[0].Func(contents)
 	tabs[0].Class().Add("selected")
 	f.AppendChild(tabsDiv)
 	f.AppendChild(contents)
