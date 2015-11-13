@@ -43,15 +43,39 @@ func (m *Observer) TakeRecords() []*Record {
 
 type Record struct {
 	*js.Object
-	Type               string     `js:"type"`
-	Target             dom.Node   `js:"target"`
-	AddedNodes         []dom.Node `js:"addedNodes"`
-	RemovedNodes       []dom.Node `js:"removedNodes"`
-	PreviousSibling    dom.Node   `js:"previousSibling"`
-	NextSibling        dom.Node   `js:"nextSibling"`
-	AttributeName      string     `js:"attributeName"`
-	AttributeNamespace string     `js:"attributeNamespace"`
-	OldValue           string     `js:"oldValue"`
+	Type               string `js:"type"`
+	AttributeName      string `js:"attributeName"`
+	AttributeNamespace string `js:"attributeNamespace"`
+	OldValue           string `js:"oldValue"`
+}
+
+func (r *Record) Target() dom.Node {
+	return dom.WrapNode(r.Get("target"))
+}
+
+func wrapNodes(o *js.Object) []dom.Node {
+	l := o.Length()
+	toRet := make([]dom.Node, l)
+	for i := 0; i < l; i++ {
+		toRet[i] = dom.WrapNode(o.Index(i))
+	}
+	return toRet
+}
+
+func (r *Record) AddedNodes() []dom.Node {
+	return wrapNodes(r.Get("addedNodes"))
+}
+
+func (r *Record) RemovedNodes() []dom.Node {
+	return wrapNodes(r.Get("removedNodes"))
+}
+
+func (r *Record) PreviousSibling() dom.Node {
+	return dom.WrapNode(r.Get("previousSibling"))
+}
+
+func (r *Record) NextSibling() dom.Node {
+	return dom.WrapNode(r.Get("nextSibling"))
 }
 
 type ObserverInit struct {
