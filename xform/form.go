@@ -6,7 +6,7 @@ import (
 
 	"github.com/MJKWoolnough/gopherjs/style"
 	"github.com/MJKWoolnough/gopherjs/xdom"
-	"github.com/MJKWoolnough/gopherjs/xjs"
+	"github.com/gopherjs/gopherjs/js"
 	"honnef.co/go/js/dom"
 )
 
@@ -43,7 +43,7 @@ func InputSizeable(id, value string) *dom.HTMLSpanElement {
 	if id != "" {
 		s.SetID(id)
 	}
-	xjs.SetInnerText(s, value)
+	s.Underlying().Call("appendChild", js.Global.Get("document").Call("createTextNode", value))
 	return s
 }
 
@@ -97,7 +97,7 @@ func (s *SizeableList) Values() []string {
 func Label(label, forID string) *dom.HTMLLabelElement {
 	l := xdom.Label()
 	l.For = forID
-	xjs.SetInnerText(l, label)
+	l.Underlying().Call("appendChild", js.Global.Get("document").Call("createTextNode", label))
 	return l
 }
 
@@ -315,6 +315,7 @@ func SelectBox(id string, values ...Option) *dom.HTMLSelectElement {
 		s.SetID(id)
 	}
 	selected := false
+	su := s.Underlying()
 	for _, v := range values {
 		o := xdom.Option()
 		o.Value = v.Value
@@ -322,7 +323,8 @@ func SelectBox(id string, values ...Option) *dom.HTMLSelectElement {
 			selected = true
 			o.Selected = true
 		}
-		s.AppendChild(xjs.SetInnerText(o, v.Label))
+		o.Underlying().Call("appendChild", js.Global.Get("document").Call("createTextNode", v.Label))
+		su.Call("appendChild", o.Underlying())
 	}
 	return s
 }
@@ -333,6 +335,6 @@ func TextArea(id string, value string) *dom.HTMLTextAreaElement {
 	if id != "" {
 		t.SetID(id)
 	}
-	xjs.SetInnerText(t, value)
+	t.Underlying().Call("appendChild", js.Global.Get("document").Call("createTextNode", value))
 	return t
 }
