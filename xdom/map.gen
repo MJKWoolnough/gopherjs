@@ -1,12 +1,12 @@
-a:Anchor
+a:Anchor:URL
 abbr
 acronym
 address
 applet:Applet
-area:Area
+area:Area:URL
 article
 aside
-audio:Audio
+audio:Audio:MEDIA
 b
 base:Base
 basefont
@@ -121,5 +121,5 @@ tt
 u
 ul:UList
 var
-video:Video
+video:Video:MEDIA
 wbr
