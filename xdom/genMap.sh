@@ -7,24 +7,50 @@ package xdom
 
 // File automatically generated with ./genMap.sh
 
-import "honnef.co/go/js/dom"
+import (
+	"github.com/gopherjs/gopherjs/js"
+	"honnef.co/go/js/dom"
+)
 HEREDOC
 	while read element; do
-		interface="dom.Element";
+		eType="BasicHTMLElement";
+		special=
 		if [ -z "${element/*:*/}" ]; then
-			interface="*dom.HTML${element#*:}Element";
-			element="${element%:*}";
+			OFS="$IFS";
+			IFS=":";
+			data=($element);
+			element="${data[0]}";
+			eType="HTML${data[1]}Element";
+			special="${data[2]}";
+			IFS="$OFS";
 		fi;
-		cElement="${element^}";
-		echo "";
-		echo "// $cElement returns a \"$element\" element with type $interface"
-		echo "func $cElement() $interface {";
-		echo -n "	return dom.GetWindow().Document().CreateElement(\"$element\")";
-		if [ "$interface" == "dom.Element" ]; then
-			echo;
+		name="${element^}";
+		cat <<HEREDOC
+
+// $name returns a "$element" element with type *dom.$eType
+func $name() *dom.$eType {
+HEREDOC
+		if [ "$special" = "URL" ]; then
+			cat <<HEREDOC
+	o := js.Global.Get("document").Call("createElement", "$element")
+	return &dom.$eType{BasicHTMLElement: &dom.BasicHTMLElement{&dom.BasicElement{&dom.BasicNode{o}}}, URLUtils: &dom.URLUtils{Object: o}}
+}
+HEREDOC
+		elif [ "$special" = "MEDIA" ]; then
+			cat <<HEREDOC
+	return &dom.$eType{HTMLMediaElement: &dom.HTMLMediaElement{BasicHTMLElement: &dom.BasicHTMLElement{&dom.BasicElement{&dom.BasicNode{js.Global.Get("document").Call("createElement", "$element")}}}}}
+}
+HEREDOC
+		elif [ "$eType" = "BasicHTMLElement" ]; then
+			cat <<HEREDOC
+	return &dom.BasicHTMLElement{&dom.BasicElement{&dom.BasicNode{js.Global.Get("document").Call("createElement", "$element")}}}
+}
+HEREDOC
 		else
-			echo ".($interface)";
+			cat <<HEREDOC
+	return &dom.$eType{BasicHTMLElement: &dom.BasicHTMLElement{&dom.BasicElement{&dom.BasicNode{js.Global.Get("document").Call("createElement", "$element")}}}}
+}
+HEREDOC
 		fi;
-		echo "}";
 	done < "map.gen";
 ) > elements.go
