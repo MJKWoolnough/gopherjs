@@ -176,11 +176,12 @@ func InputPassword(id, value string) *dom.HTMLInputElement {
 }
 
 // InputNumber creates a text input that only allows number to be entered
-func InputNumber(id string, min, max float64) *dom.HTMLInputElement {
+func InputNumber(id string, min, max, value float64) *dom.HTMLInputElement {
 	i := xdom.Input()
 	i.Type = "number"
 	i.Min = strconv.FormatFloat(min, 'f', -1, 64)
-	i.Max = strconv.FormatFloat(min, 'f', -1, 64)
+	i.Max = strconv.FormatFloat(max, 'f', -1, 64)
+	i.ValueAsNumber = value
 	if id != "" {
 		i.SetID(id)
 	}
