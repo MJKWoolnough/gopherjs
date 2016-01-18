@@ -17,11 +17,11 @@ func processStruct(v reflect.Value) *js.Object {
 		f := t.Field(i)
 		if f.PkgPath == "" { // exported
 			name := f.Name
-			tag := f.Tag.Get("json")
-			if tag != "" {
-				if tag == "-" {
-					continue
-				}
+			switch tag := f.Tag.Get("json"); tag {
+			case "":
+			case "-":
+				continue
+			default:
 				// set name and check tag options
 			}
 			o.Set(name, processType(v.Field(i)))
