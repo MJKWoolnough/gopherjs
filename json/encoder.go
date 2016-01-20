@@ -2,55 +2,56 @@ package json
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/gopherjs/gopherjs/js"
 )
 
-type objectInfo struct {
-	v reflect.Value
-	c int
-}
-
 func Encode(v interface{}) string {
-	objects := make([]objectInfo, 1, 16) // worth working out actual maximum depth?
-	objects[0] = objectInfo{v: reflect.ValueOf(v)}
-	return js.Global.Get("JSON").Get("stringify").Invoke(v, func(key, value *js.Object) *js.Object {
-		v := objects[len(objects)-1].v
-		objects[len(objects)-1].c--
-		if objects[len(objects)-1].c == 0 {
-			objects = objects[:len(objects)-1]
-		}
-		switch k := v.Kind(); k {
-		case reflect.Struct:
-			v = v.FieldByName(key.String())
-		case reflect.Array, reflect.Slice:
-			v = v.Index(key.Int())
-		case reflect.Map:
-			v = v.MapIndex(reflect.ValueOf(key.String()))
-		}
-		switch k := v.Kind(); k {
-		case reflect.Struct:
-			c := 0
-			nf := v.NumField()
-			t := v.Type()
-			for i := 0; i < nf; i++ {
-				field := t.Field(i)
-				if field.PkgPath == "" {
-					tag := field.Tag.Get("json")
-					if tag == "-" {
-						value.Set(field.Name, js.Undefined)
-						value.Delete(field.Name)
-						continue
-					}
-					c++
-				}
-			}
-			objects = append(objects, objectInfo{v, c})
-		case reflect.Array, reflect.Slice:
-			objects = append(objects, objectInfo{v, v.Len()})
-		case reflect.Map:
-			objects = append(objects, objectInfo{v, v.Len()})
+	run := true
+	t := reflect.TypeOf(v)
+	return js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
+		if run {
+			run = false
+			filter(t, value)
 		}
 		return value
 	}).String()
+}
+
+func filter(t reflect.Type, value *js.Object) {
+	switch t.Kind() {
+	case reflect.Struct:
+		nf := t.NumField()
+		for i := 0; i < nf; i++ {
+			field := t.Field(i)
+			tag := field.Tag.Get("json")
+			if tag == "-" {
+				value.Delete(field.Name)
+				continue
+			}
+			filter(field.Type, value.Get(field.Name))
+			if tag != "" {
+				p := strings.SplitN(tag, ",", 2)
+				if p[0] != "" {
+					if p[0] != field.Name {
+						value.Set(p[0], value.Get(field.Name))
+						value.Delete(field.Name)
+					}
+				}
+			}
+
+		}
+	case reflect.Array, reflect.Slice:
+		len := value.Length()
+		for i := 0; i < len; i++ {
+			filter(t.Elem(), value.Index(i))
+		}
+	case reflect.Map:
+		keys := js.Global.Get("Object").Call("keys", value)
+		len := keys.Length()
+		for i := 0; i < len; i++ {
+			filter(t.Elem(), value.Get(keys.Index(i).String()))
+		}
+	}
 }
