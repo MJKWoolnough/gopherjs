@@ -87,3 +87,7 @@ func AppendChildren(parent dom.Node, children ...dom.Node) dom.Node {
 	}
 	return parent
 }
+
+func Log(format string, params ...interface{}) {
+	js.Global.Get("console").Call("log", fmt.Sprintf(format, params...))
+}
