@@ -2,15 +2,15 @@ package json
 
 import "github.com/gopherjs/gopherjs/js"
 
-func Encode(v interface{}) string {
+func Marshal(v interface{}) ([]byte, error) {
 	run := true
-	return js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
+	return []byte(js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
 		if run {
 			run = false
 			filter(js.InternalObject(v).Get("constructor"), value)
 		}
 		return value
-	}).String()
+	}).String()), nil
 }
 
 const (
