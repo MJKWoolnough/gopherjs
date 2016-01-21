@@ -1,57 +1,61 @@
 package json
 
-import (
-	"reflect"
-	"strings"
-
-	"github.com/gopherjs/gopherjs/js"
-)
+import "github.com/gopherjs/gopherjs/js"
 
 func Encode(v interface{}) string {
 	run := true
-	t := reflect.TypeOf(v)
 	return js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
 		if run {
 			run = false
-			filter(t, value)
+			filter(js.InternalObject(v).Get("constructor"), value)
 		}
 		return value
 	}).String()
 }
 
-func filter(t reflect.Type, value *js.Object) {
-	switch t.Kind() {
-	case reflect.Struct:
-		nf := t.NumField()
-		for i := 0; i < nf; i++ {
-			field := t.Field(i)
-			tag := field.Tag.Get("json")
-			if tag == "-" {
-				value.Delete(field.Name)
-				continue
-			}
-			filter(field.Type, value.Get(field.Name))
-			if tag != "" {
-				p := strings.SplitN(tag, ",", 2)
-				if p[0] != "" {
-					if p[0] != field.Name {
-						value.Set(p[0], value.Get(field.Name))
-						value.Delete(field.Name)
-					}
-				}
-			}
+const (
+	arrayKind  = 17
+	mapKind    = 21
+	ptrKind    = 22
+	sliceKind  = 23
+	structKind = 25
+)
 
-		}
-	case reflect.Array, reflect.Slice:
+func filter(t, value *js.Object) {
+	switch t.Get("kind").Int() {
+	case arrayKind, sliceKind:
 		len := value.Length()
 		for i := 0; i < len; i++ {
-			filter(t.Elem(), value.Index(i))
+			filter(t.Get("elem"), value.Index(i))
 		}
-	case reflect.Map:
+	case mapKind:
 		keys := js.Global.Get("Object").Call("keys", value)
 		len := keys.Length()
 		for i := 0; i < len; i++ {
-			filter(t.Elem(), value.Get(keys.Index(i).String()))
+			filter(t.Get("elem"), value.Get(keys.Index(i).String()))
+		}
+	case ptrKind:
+		filter(t.Get("elem"), value)
+	case structKind:
+		nf := t.Get("fields").Length()
+		for i := 0; i < nf; i++ {
+			field := t.Get("fields").Index(i)
+			tag := field.Get("tag").Call("replace", js.Global.Get("RegExp").New(".*json:\"([^\"]*)\".*"), "$1") // need to do this better
+			if tag.String() == "-" {
+				value.Delete(field.Get("name").String())
+				continue
+			}
+			name := field.Get("name")
+			filter(field.Get("typ"), value.Get(name.String()))
+			if tag.Length() != 0 {
+				p := tag.Call("split", ",", 2)
+				if p.Index(0).Length() != 0 {
+					if p.Index(0) != name {
+						value.Set(p.Index(0).String(), value.Get(name.String()))
+						value.Delete(name.String())
+					}
+				}
+			}
 		}
 	}
 }
