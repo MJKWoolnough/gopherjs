@@ -3,6 +3,11 @@ package json
 import "github.com/gopherjs/gopherjs/js"
 
 func Marshal(v interface{}) ([]byte, error) {
+	s, err := MarshalString(v)
+	return []byte(s), err
+}
+
+func MarshalString(v interface{}) (string, error) {
 	run := true
 	return []byte(js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
 		if run {
