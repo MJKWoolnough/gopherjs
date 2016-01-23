@@ -9,13 +9,13 @@ func Marshal(v interface{}) ([]byte, error) {
 
 func MarshalString(v interface{}) (string, error) {
 	run := true
-	return []byte(js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
+	return js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
 		if run {
 			run = false
 			filter(js.InternalObject(v).Get("constructor"), value)
 		}
 		return value
-	}).String()), nil
+	}).String(), nil
 }
 
 const (
