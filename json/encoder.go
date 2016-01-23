@@ -3,19 +3,31 @@ package json
 import "github.com/gopherjs/gopherjs/js"
 
 func Marshal(v interface{}) ([]byte, error) {
-	s, err := MarshalString(v)
+	return MarshalIndent(v, "", "")
+}
+
+func MarshalIndent(v interface{}, prefix, indent string) ([]byte, error) {
+	s, err := MarshalIndentString(v, prefix, indent)
 	return []byte(s), err
 }
 
 func MarshalString(v interface{}) (string, error) {
+	return MarshalIndentString(v, "", "")
+}
+
+func MarshalIndentString(v interface{}, prefix, indent string) (string, error) {
 	run := true
-	return js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
+	str := js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
 		if run {
 			run = false
 			filter(js.InternalObject(v).Get("constructor"), value)
 		}
 		return value
-	}).String(), nil
+	}, indent)
+	if len(prefix) > 0 {
+		str = str.Call("replace", js.Global.Get("RegExp").New("\n", "g"), "\n"+prefix)
+	}
+	return str.String(), nil
 }
 
 const (
