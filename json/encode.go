@@ -16,14 +16,7 @@ func MarshalString(v interface{}) (string, error) {
 }
 
 func MarshalIndentString(v interface{}, prefix, indent string) (string, error) {
-	run := true
-	str := js.Global.Get("JSON").Call("stringify", v, func(key, value *js.Object) *js.Object {
-		if run {
-			run = false
-			filter(js.InternalObject(v), js.InternalObject(v).Get("constructor"), value)
-		}
-		return value
-	}, indent)
+	str := js.Global.Get("JSON").Call("stringify", js.InternalObject(filterIt).Invoke(js.InternalObject(v), v), nil, indent)
 	if len(prefix) > 0 {
 		str = str.Call("replace", js.Global.Get("RegExp").New("\n", "g"), "\n"+prefix)
 	}
@@ -38,6 +31,11 @@ const (
 	sliceKind     = 23
 	structKind    = 25
 )
+
+func filterIt(v, value *js.Object) *js.Object {
+	filter(v, v.Get("constructor"), value)
+	return value
+}
 
 func filter(v, t, value *js.Object) {
 	switch t.Get("kind").Int() {
