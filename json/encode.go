@@ -57,21 +57,17 @@ func filter(v, t, value *js.Object) {
 		nf := t.Get("fields").Length()
 		for i := 0; i < nf; i++ {
 			field := t.Get("fields").Index(i)
-			tag := field.Get("tag").Call("replace", js.Global.Get("RegExp").New(".*json:\"([^\"]*)\".*"), "$1") // need to do this better
+			tag, tagOptions := parseTag(field.Get("tag"))
 			if tag.String() == "-" {
 				value.Delete(field.Get("name").String())
 				continue
 			}
 			name := field.Get("name")
-			filter(v.Get(name.String()), field.Get("typ"), value.Get(name.String()))
-			if tag.Length() != 0 {
-				p := tag.Call("split", ",", 2)
-				if p.Index(0).Length() != 0 {
-					if p.Index(0) != name {
-						value.Set(p.Index(0).String(), value.Get(name.String()))
-						value.Delete(name.String())
-					}
-				}
+			nameStr := name.String()
+			filter(v.Get(nameStr), field.Get("typ"), value.Get(nameStr))
+			if tag.Length() != 0 && tag != name {
+				value.Set(tag.String(), value.Get(nameStr))
+				value.Delete(nameStr)
 			}
 		}
 	case interfaceKind:
