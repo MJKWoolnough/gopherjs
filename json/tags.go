@@ -17,7 +17,7 @@ func getJSONTag(tag *js.Object) string {
 				break
 			}
 		}
-		if i+1 >= strLen || char != ':' || tag.Call("charCodeAt", i+1).Int() {
+		if i+1 >= strLen || char != ':' || tag.Call("charCodeAt", i+1).Int() != '"' {
 			break
 		}
 		name := tag.Call("substring", start, i)
@@ -49,17 +49,17 @@ type tagOptions struct {
 func parseTag(tag string) (string, tagOptions) {
 	split := js.Global.Get("String").Get("indexOf").Invoke(tag, ",").Int()
 	if split < 0 {
-		return val, tagOptions{nil}
+		return tag, tagOptions{nil}
 	}
-	return js.Global.Get("String").Get("substr").Invoke(tag, 0, split), tagOptions{js.Global.Get("String").Get("substr").Invoke(tag, split+1)}
+	return js.Global.Get("String").Get("substr").Invoke(tag, 0, split).String(), tagOptions{js.Global.Get("String").Get("substr").Invoke(tag, split+1)}
 }
 
 func (o tagOptions) Contains(option string) bool {
 	if o.Object == nil || o.Length() == 0 || o.Length() < len(option) {
 		return false
 	}
-	if str.Length() == len(option) {
+	if o.Length() == len(option) {
 		return o.String() == option
 	}
-	return o.Call("substr", 0, len(option)+1) == option+"," || o.Call("substr", -1-len(option)) == ","+option || o.Call("includes", ","+option+",")
+	return o.Call("substr", 0, len(option)+1).String() == option+"," || o.Call("substr", -1-len(option)).String() == ","+option || o.Call("includes", ","+option+",").Bool()
 }
