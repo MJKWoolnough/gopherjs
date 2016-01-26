@@ -57,20 +57,33 @@ func filter(v, t, value *js.Object) {
 		nf := t.Get("fields").Length()
 		for i := 0; i < nf; i++ {
 			field := t.Get("fields").Index(i)
-			tag, tagOptions := parseTag(field.Get("tag"))
-			if tag.String() == "-" {
+			tag, tagOptions := parseTag(getJSONTag(field.Get("tag")))
+			if tag == "-" {
 				value.Delete(field.Get("name").String())
 				continue
 			}
-			name := field.Get("name")
-			nameStr := name.String()
-			filter(v.Get(nameStr), field.Get("typ"), value.Get(nameStr))
-			if tag.Length() != 0 && tag != name {
-				value.Set(tag.String(), value.Get(nameStr))
-				value.Delete(nameStr)
+			name := field.Get("name").String()
+			if tagOptions.Contains("omitempty") {
+				if isEmpty(v.Get(name)) {
+					value.Delete(name)
+					continue
+				}
+			}
+			if tagOptions.Contains("string") {
+
+			} else {
+				filter(v.Get(name), field.Get("typ"), value.Get(name))
+			}
+			if len(tag) != 0 && tag != name {
+				value.Set(tag, value.Get(name))
+				value.Delete(name)
 			}
 		}
 	case interfaceKind:
 		filter(v.Get("$val"), v.Get("constructor"), value)
 	}
+}
+
+func isEmpty(v *js.Object) bool {
+	return false
 }
