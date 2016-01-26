@@ -2,7 +2,7 @@ package json
 
 import "github.com/gopherjs/gopherjs/js"
 
-func parseTag(tag *js.Object) (*js.Object, *js.Object) {
+func getJSONTag(tag *js.Object) string {
 	strLen := tag.Length()
 	var val *js.Object
 	for i := 0; i < strLen; i++ {
@@ -37,21 +37,29 @@ func parseTag(tag *js.Object) (*js.Object, *js.Object) {
 		}
 	}
 	if val == nil {
-		return nil, nil
+		return ""
 	}
-	split := val.Call("indexOf", ",").Int()
-	if split < 0 {
-		return val, nil
-	}
-	return val.Call("substr", 0, split), val.Call("substr", split+1)
+	return val.String()
 }
 
-func tagContains(str *js.Object, option string) bool {
-	if str == nil || str.Length() == 0 || str.Length() < len(option) {
+type tagOptions struct {
+	*js.Object
+}
+
+func parseTag(tag string) (string, tagOptions) {
+	split := js.Global.Get("String").Get("indexOf").Invoke(tag, ",").Int()
+	if split < 0 {
+		return val, tagOptions{nil}
+	}
+	return js.Global.Get("String").Get("substr").Invoke(tag, 0, split), tagOptions{js.Global.Get("String").Get("substr").Invoke(tag, split+1)}
+}
+
+func (o tagOptions) Contains(option string) bool {
+	if o.Object == nil || o.Length() == 0 || o.Length() < len(option) {
 		return false
 	}
 	if str.Length() == len(option) {
-		return str.String() == option
+		return o.String() == option
 	}
-	return str.Call("substr", 0, len(option)+1) == option+"," || str.Call("substr", -1-len(option)) == ","+option || str.Call("includes", ","+option+",")
+	return o.Call("substr", 0, len(option)+1) == option+"," || o.Call("substr", -1-len(option)) == ","+option || o.Call("includes", ","+option+",")
 }
