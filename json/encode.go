@@ -69,11 +69,11 @@ func filter(v, t, value *js.Object) {
 					continue
 				}
 			}
-			if tagOptions.Contains("string") {
+			//if tagOptions.Contains("string") {
 
-			} else {
-				filter(v.Get(name), field.Get("typ"), value.Get(name))
-			}
+			//} else {
+			filter(v.Get(name), field.Get("typ"), value.Get(name))
+			//}
 			if len(tag) != 0 && tag != name {
 				value.Set(tag, value.Get(name))
 				value.Delete(name)
