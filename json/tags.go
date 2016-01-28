@@ -47,11 +47,11 @@ type tagOptions struct {
 }
 
 func parseTag(tag string) (string, tagOptions) {
-	split := js.Global.Get("String").Get("indexOf").Invoke(tag, ",").Int()
+	split := js.Global.Get("String").Get("prototype").Get("indexOf").Call("call", tag, ",").Int()
 	if split < 0 {
 		return tag, tagOptions{nil}
 	}
-	return js.Global.Get("String").Get("substr").Invoke(tag, 0, split).String(), tagOptions{js.Global.Get("String").Get("substr").Invoke(tag, split+1)}
+	return js.Global.Get("String").Get("prototype").Get("substr").Call("call", tag, 0, split).String(), tagOptions{js.Global.Get("String").Get("prototype").Get("substr").Call("call", tag, split+1)}
 }
 
 func (o tagOptions) Contains(option string) bool {
