@@ -24,12 +24,29 @@ func MarshalIndentString(v interface{}, prefix, indent string) (string, error) {
 }
 
 const (
-	arrayKind     = 17
-	interfaceKind = 20
-	mapKind       = 21
-	ptrKind       = 22
-	sliceKind     = 23
-	structKind    = 25
+	boolKind       = 1
+	intKind        = 2
+	int8Kind       = 3
+	int16Kind      = 4
+	int32Kind      = 5
+	int64Kind      = 6
+	uintKind       = 7
+	uint8Kind      = 8
+	uint16Kind     = 9
+	uint32Kind     = 10
+	uint64Kind     = 11
+	uintptrKind    = 12
+	float32Kind    = 13
+	float64Kind    = 14
+	complex64Kind  = 15
+	complex128Kind = 16
+	arrayKind      = 17
+	interfaceKind  = 20
+	mapKind        = 21
+	ptrKind        = 22
+	sliceKind      = 23
+	stringKind     = 24
+	structKind     = 25
 )
 
 func filterIt(v, value *js.Object) *js.Object {
@@ -45,11 +62,11 @@ func filter(v, t, value *js.Object) {
 			filter(v.Get("$array").Index(i), t.Get("elem"), value.Index(i))
 		}
 	case mapKind:
-		keys := js.Global.Get("Object").Call("keys", value)
+		keys := js.Global.Get("Object").Call("keys", v)
 		len := keys.Length()
 		for i := 0; i < len; i++ {
-			name := keys.Index(i).String()
-			filter(v.Get("$map").Get(name), t.Get("elem"), value.Get(name))
+			o := v.Get(keys.Index(i).String())
+			filter(o.Get("v"), t.Get("elem"), value.Get(o.Get("k").String()))
 		}
 	case ptrKind:
 		filter(v, t.Get("elem"), value)
@@ -64,16 +81,16 @@ func filter(v, t, value *js.Object) {
 			}
 			name := field.Get("name").String()
 			if tagOptions.Contains("omitempty") {
-				if isEmpty(v.Get(name)) {
+				if isEmpty(v.Get(name), field.Get("typ")) {
 					value.Delete(name)
 					continue
 				}
 			}
-			//if tagOptions.Contains("string") {
+			if false && tagOptions.Contains("string") {
 
-			//} else {
-			filter(v.Get(name), field.Get("typ"), value.Get(name))
-			//}
+			} else {
+				filter(v.Get(name), field.Get("typ"), value.Get(name))
+			}
 			if len(tag) != 0 && tag != name {
 				value.Set(tag, value.Get(name))
 				value.Delete(name)
@@ -84,6 +101,30 @@ func filter(v, t, value *js.Object) {
 	}
 }
 
-func isEmpty(v *js.Object) bool {
+func isEmpty(v, t *js.Object) bool {
+	switch t.Get("kind").Int() {
+	case boolKind:
+		return !v.Bool()
+	case int8Kind, int16Kind, int32Kind, intKind, uint8Kind, uint16Kind, uint32Kind, uintKind:
+		return v.Int() == 0
+	case int64Kind, uint64Kind:
+		return v.Int64() == 0
+	case float32Kind, float64Kind:
+		return v.Float() == 0
+	case arrayKind, sliceKind, stringKind:
+		return v.Length() == 0
+	case ptrKind:
+		if v == t.Get("nil") {
+			return true
+		}
+		return isEmpty(v.Call("$get"), t.Get("elem"))
+	case interfaceKind:
+		if v.Get("$val") == js.Undefined {
+			return true
+		}
+		return isEmpty(v.Get("$val"), v.Get("constructor"))
+	case mapKind:
+		return js.Global.Get("Object").Call("keys", v).Length() == 0
+	}
 	return false
 }
