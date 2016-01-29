@@ -74,6 +74,7 @@ func filter(v, t, value *js.Object) {
 		nf := t.Get("fields").Length()
 		for i := 0; i < nf; i++ {
 			field := t.Get("fields").Index(i)
+			fieldType := field.Get("typ")
 			tag, tagOptions := parseTag(getJSONTag(field.Get("tag")))
 			if tag == "-" {
 				value.Delete(field.Get("name").String())
@@ -81,15 +82,19 @@ func filter(v, t, value *js.Object) {
 			}
 			name := field.Get("name").String()
 			if tagOptions.Contains("omitempty") {
-				if isEmpty(v.Get(name), field.Get("typ")) {
+				if isEmpty(v.Get(name), fieldType) {
 					value.Delete(name)
 					continue
 				}
 			}
-			if false && tagOptions.Contains("string") {
-
+			if tagOptions.Contains("string") && stringable(fieldType) {
+				if fieldType.Get("kind").Int() == stringKind {
+					value.Set(name, js.Global.Get("JSON").Call("stringify", v.Get(name)))
+				} else {
+					value.Set(name, value.Get(name).Call("toString"))
+				}
 			} else {
-				filter(v.Get(name), field.Get("typ"), value.Get(name))
+				filter(v.Get(name), fieldType, value.Get(name))
 			}
 			if len(tag) != 0 && tag != name {
 				value.Set(tag, value.Get(name))
@@ -125,6 +130,14 @@ func isEmpty(v, t *js.Object) bool {
 		return isEmpty(v.Get("$val"), v.Get("constructor"))
 	case mapKind:
 		return js.Global.Get("Object").Call("keys", v).Length() == 0
+	}
+	return false
+}
+
+func stringable(t *js.Object) bool {
+	switch t.Get("kind").Int() {
+	case boolKind, int8Kind, int16Kind, int32Kind, intKind, uint8Kind, uint16Kind, uint32Kind, uintKind, int64Kind, uint64Kind, float32Kind, float64Kind, stringKind:
+		return true
 	}
 	return false
 }
