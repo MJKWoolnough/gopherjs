@@ -141,3 +141,15 @@ func stringable(t *js.Object) bool {
 	}
 	return false
 }
+
+func isMarshaler(t *js.Object) bool {
+	methodNum := t.Get("methods").Length()
+	for i := 0; i < methodNum; i++ {
+		method := t.Get("methods").Index(i)
+		if method.Get("name").String() == "MarshalJSON" {
+			mt := method.Get("typ")
+			return mt.Get("params").Length() == 0 && mt.Get("results").Length() == 2 && mt.Get("results").Index(0).Get("string").String() == "[]uint8" && mt.Get("results").Index(1).Get("string").String() == "error"
+		}
+	}
+	return false
+}
