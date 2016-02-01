@@ -69,7 +69,9 @@ func filter(v, t, value *js.Object) {
 			filter(o.Get("v"), t.Get("elem"), value.Get(o.Get("k").String()))
 		}
 	case ptrKind:
-		filter(v, t.Get("elem"), value)
+		if v.Get("$val") != t.Get("nil") {
+			filter(v, t.Get("elem"), value)
+		}
 	case structKind:
 		nf := t.Get("fields").Length()
 		for i := 0; i < nf; i++ {
@@ -81,6 +83,9 @@ func filter(v, t, value *js.Object) {
 				continue
 			}
 			name := field.Get("name").String()
+			if name == "" {
+				name = field.Get("prop").String()
+			}
 			if tagOptions.Contains("omitempty") {
 				if isEmpty(v.Get(name), fieldType) {
 					value.Delete(name)
