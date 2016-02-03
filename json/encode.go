@@ -124,10 +124,7 @@ func isEmpty(v, t *js.Object) bool {
 	case arrayKind, sliceKind, stringKind:
 		return v.Length() == 0
 	case ptrKind:
-		if v == t.Get("nil") {
-			return true
-		}
-		return isEmpty(v.Call("$get"), t.Get("elem"))
+		return v == t.Get("nil")
 	case interfaceKind:
 		if v.Get("$val") == js.Undefined {
 			return true
