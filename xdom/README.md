@@ -16,23 +16,23 @@ A returns a "a" element with type *dom.HTMLAnchorElement
 #### func  Abbr
 
 ```go
-func Abbr() dom.Element
+func Abbr() *dom.BasicHTMLElement
 ```
-Abbr returns a "abbr" element with type dom.Element
+Abbr returns a "abbr" element with type *dom.BasicHTMLElement
 
 #### func  Acronym
 
 ```go
-func Acronym() dom.Element
+func Acronym() *dom.BasicHTMLElement
 ```
-Acronym returns a "acronym" element with type dom.Element
+Acronym returns a "acronym" element with type *dom.BasicHTMLElement
 
 #### func  Address
 
 ```go
-func Address() dom.Element
+func Address() *dom.BasicHTMLElement
 ```
-Address returns a "address" element with type dom.Element
+Address returns a "address" element with type *dom.BasicHTMLElement
 
 #### func  Applet
 
@@ -51,16 +51,16 @@ Area returns a "area" element with type *dom.HTMLAreaElement
 #### func  Article
 
 ```go
-func Article() dom.Element
+func Article() *dom.BasicHTMLElement
 ```
-Article returns a "article" element with type dom.Element
+Article returns a "article" element with type *dom.BasicHTMLElement
 
 #### func  Aside
 
 ```go
-func Aside() dom.Element
+func Aside() *dom.BasicHTMLElement
 ```
-Aside returns a "aside" element with type dom.Element
+Aside returns a "aside" element with type *dom.BasicHTMLElement
 
 #### func  Audio
 
@@ -72,9 +72,9 @@ Audio returns a "audio" element with type *dom.HTMLAudioElement
 #### func  B
 
 ```go
-func B() dom.Element
+func B() *dom.BasicHTMLElement
 ```
-B returns a "b" element with type dom.Element
+B returns a "b" element with type *dom.BasicHTMLElement
 
 #### func  Base
 
@@ -86,30 +86,30 @@ Base returns a "base" element with type *dom.HTMLBaseElement
 #### func  Basefont
 
 ```go
-func Basefont() dom.Element
+func Basefont() *dom.BasicHTMLElement
 ```
-Basefont returns a "basefont" element with type dom.Element
+Basefont returns a "basefont" element with type *dom.BasicHTMLElement
 
 #### func  Bdi
 
 ```go
-func Bdi() dom.Element
+func Bdi() *dom.BasicHTMLElement
 ```
-Bdi returns a "bdi" element with type dom.Element
+Bdi returns a "bdi" element with type *dom.BasicHTMLElement
 
 #### func  Bdo
 
 ```go
-func Bdo() dom.Element
+func Bdo() *dom.BasicHTMLElement
 ```
-Bdo returns a "bdo" element with type dom.Element
+Bdo returns a "bdo" element with type *dom.BasicHTMLElement
 
 #### func  Big
 
 ```go
-func Big() dom.Element
+func Big() *dom.BasicHTMLElement
 ```
-Big returns a "big" element with type dom.Element
+Big returns a "big" element with type *dom.BasicHTMLElement
 
 #### func  Blockquote
 
@@ -156,9 +156,9 @@ Caption returns a "caption" element with type *dom.HTMLTableCaptionElement
 #### func  Center
 
 ```go
-func Center() dom.Element
+func Center() *dom.BasicHTMLElement
 ```
-Center returns a "center" element with type dom.Element
+Center returns a "center" element with type *dom.BasicHTMLElement
 
 #### func  Cite
 
@@ -170,9 +170,9 @@ Cite returns a "cite" element with type *dom.HTMLQuoteElement
 #### func  Code
 
 ```go
-func Code() dom.Element
+func Code() *dom.BasicHTMLElement
 ```
-Code returns a "code" element with type dom.Element
+Code returns a "code" element with type *dom.BasicHTMLElement
 
 #### func  Col
 
@@ -191,9 +191,9 @@ Colgroup returns a "colgroup" element with type *dom.HTMLTableColElement
 #### func  Content
 
 ```go
-func Content() dom.Element
+func Content() *dom.BasicHTMLElement
 ```
-Content returns a "content" element with type dom.Element
+Content returns a "content" element with type *dom.BasicHTMLElement
 
 #### func  Data
 
@@ -212,9 +212,9 @@ Datalist returns a "datalist" element with type *dom.HTMLDataListElement
 #### func  Dd
 
 ```go
-func Dd() dom.Element
+func Dd() *dom.BasicHTMLElement
 ```
-Dd returns a "dd" element with type dom.Element
+Dd returns a "dd" element with type *dom.BasicHTMLElement
 
 #### func  Del
 
@@ -226,23 +226,23 @@ Del returns a "del" element with type *dom.HTMLModElement
 #### func  Details
 
 ```go
-func Details() dom.Element
+func Details() *dom.BasicHTMLElement
 ```
-Details returns a "details" element with type dom.Element
+Details returns a "details" element with type *dom.BasicHTMLElement
 
 #### func  Dfn
 
 ```go
-func Dfn() dom.Element
+func Dfn() *dom.BasicHTMLElement
 ```
-Dfn returns a "dfn" element with type dom.Element
+Dfn returns a "dfn" element with type *dom.BasicHTMLElement
 
 #### func  Dialog
 
 ```go
-func Dialog() dom.Element
+func Dialog() *dom.BasicHTMLElement
 ```
-Dialog returns a "dialog" element with type dom.Element
+Dialog returns a "dialog" element with type *dom.BasicHTMLElement
 
 #### func  Dir
 
@@ -268,16 +268,16 @@ Dl returns a "dl" element with type *dom.HTMLDListElement
 #### func  Dt
 
 ```go
-func Dt() dom.Element
+func Dt() *dom.BasicHTMLElement
 ```
-Dt returns a "dt" element with type dom.Element
+Dt returns a "dt" element with type *dom.BasicHTMLElement
 
 #### func  Em
 
 ```go
-func Em() dom.Element
+func Em() *dom.BasicHTMLElement
 ```
-Em returns a "em" element with type dom.Element
+Em returns a "em" element with type *dom.BasicHTMLElement
 
 #### func  Embed
 
@@ -296,16 +296,16 @@ Fieldset returns a "fieldset" element with type *dom.HTMLFieldSetElement
 #### func  Figcaption
 
 ```go
-func Figcaption() dom.Element
+func Figcaption() *dom.BasicHTMLElement
 ```
-Figcaption returns a "figcaption" element with type dom.Element
+Figcaption returns a "figcaption" element with type *dom.BasicHTMLElement
 
 #### func  Figure
 
 ```go
-func Figure() dom.Element
+func Figure() *dom.BasicHTMLElement
 ```
-Figure returns a "figure" element with type dom.Element
+Figure returns a "figure" element with type *dom.BasicHTMLElement
 
 #### func  Font
 
@@ -317,9 +317,9 @@ Font returns a "font" element with type *dom.HTMLFontElement
 #### func  Footer
 
 ```go
-func Footer() dom.Element
+func Footer() *dom.BasicHTMLElement
 ```
-Footer returns a "footer" element with type dom.Element
+Footer returns a "footer" element with type *dom.BasicHTMLElement
 
 #### func  Form
 
@@ -394,9 +394,9 @@ Head returns a "head" element with type *dom.HTMLHeadElement
 #### func  Header
 
 ```go
-func Header() dom.Element
+func Header() *dom.BasicHTMLElement
 ```
-Header returns a "header" element with type dom.Element
+Header returns a "header" element with type *dom.BasicHTMLElement
 
 #### func  Hr
 
@@ -415,9 +415,9 @@ Html returns a "html" element with type *dom.HTMLHtmlElement
 #### func  I
 
 ```go
-func I() dom.Element
+func I() *dom.BasicHTMLElement
 ```
-I returns a "i" element with type dom.Element
+I returns a "i" element with type *dom.BasicHTMLElement
 
 #### func  Iframe
 
@@ -450,9 +450,9 @@ Ins returns a "ins" element with type *dom.HTMLModElement
 #### func  Kbd
 
 ```go
-func Kbd() dom.Element
+func Kbd() *dom.BasicHTMLElement
 ```
-Kbd returns a "kbd" element with type dom.Element
+Kbd returns a "kbd" element with type *dom.BasicHTMLElement
 
 #### func  Keygen
 
@@ -492,9 +492,9 @@ Link returns a "link" element with type *dom.HTMLLinkElement
 #### func  Main
 
 ```go
-func Main() dom.Element
+func Main() *dom.BasicHTMLElement
 ```
-Main returns a "main" element with type dom.Element
+Main returns a "main" element with type *dom.BasicHTMLElement
 
 #### func  Map
 
@@ -506,9 +506,9 @@ Map returns a "map" element with type *dom.HTMLMapElement
 #### func  Mark
 
 ```go
-func Mark() dom.Element
+func Mark() *dom.BasicHTMLElement
 ```
-Mark returns a "mark" element with type dom.Element
+Mark returns a "mark" element with type *dom.BasicHTMLElement
 
 #### func  Menu
 
@@ -520,9 +520,9 @@ Menu returns a "menu" element with type *dom.HTMLMenuElement
 #### func  Menuitem
 
 ```go
-func Menuitem() dom.Element
+func Menuitem() *dom.BasicHTMLElement
 ```
-Menuitem returns a "menuitem" element with type dom.Element
+Menuitem returns a "menuitem" element with type *dom.BasicHTMLElement
 
 #### func  Meta
 
@@ -541,23 +541,23 @@ Meter returns a "meter" element with type *dom.HTMLMeterElement
 #### func  Nav
 
 ```go
-func Nav() dom.Element
+func Nav() *dom.BasicHTMLElement
 ```
-Nav returns a "nav" element with type dom.Element
+Nav returns a "nav" element with type *dom.BasicHTMLElement
 
 #### func  Noframes
 
 ```go
-func Noframes() dom.Element
+func Noframes() *dom.BasicHTMLElement
 ```
-Noframes returns a "noframes" element with type dom.Element
+Noframes returns a "noframes" element with type *dom.BasicHTMLElement
 
 #### func  Noscript
 
 ```go
-func Noscript() dom.Element
+func Noscript() *dom.BasicHTMLElement
 ```
-Noscript returns a "noscript" element with type dom.Element
+Noscript returns a "noscript" element with type *dom.BasicHTMLElement
 
 #### func  Object
 
@@ -632,37 +632,37 @@ Q returns a "q" element with type *dom.HTMLQuoteElement
 #### func  Rp
 
 ```go
-func Rp() dom.Element
+func Rp() *dom.BasicHTMLElement
 ```
-Rp returns a "rp" element with type dom.Element
+Rp returns a "rp" element with type *dom.BasicHTMLElement
 
 #### func  Rt
 
 ```go
-func Rt() dom.Element
+func Rt() *dom.BasicHTMLElement
 ```
-Rt returns a "rt" element with type dom.Element
+Rt returns a "rt" element with type *dom.BasicHTMLElement
 
 #### func  Ruby
 
 ```go
-func Ruby() dom.Element
+func Ruby() *dom.BasicHTMLElement
 ```
-Ruby returns a "ruby" element with type dom.Element
+Ruby returns a "ruby" element with type *dom.BasicHTMLElement
 
 #### func  S
 
 ```go
-func S() dom.Element
+func S() *dom.BasicHTMLElement
 ```
-S returns a "s" element with type dom.Element
+S returns a "s" element with type *dom.BasicHTMLElement
 
 #### func  Samp
 
 ```go
-func Samp() dom.Element
+func Samp() *dom.BasicHTMLElement
 ```
-Samp returns a "samp" element with type dom.Element
+Samp returns a "samp" element with type *dom.BasicHTMLElement
 
 #### func  Script
 
@@ -674,9 +674,9 @@ Script returns a "script" element with type *dom.HTMLScriptElement
 #### func  Section
 
 ```go
-func Section() dom.Element
+func Section() *dom.BasicHTMLElement
 ```
-Section returns a "section" element with type dom.Element
+Section returns a "section" element with type *dom.BasicHTMLElement
 
 #### func  Select
 
@@ -688,16 +688,16 @@ Select returns a "select" element with type *dom.HTMLSelectElement
 #### func  Shadow
 
 ```go
-func Shadow() dom.Element
+func Shadow() *dom.BasicHTMLElement
 ```
-Shadow returns a "shadow" element with type dom.Element
+Shadow returns a "shadow" element with type *dom.BasicHTMLElement
 
 #### func  Small
 
 ```go
-func Small() dom.Element
+func Small() *dom.BasicHTMLElement
 ```
-Small returns a "small" element with type dom.Element
+Small returns a "small" element with type *dom.BasicHTMLElement
 
 #### func  Source
 
@@ -716,16 +716,16 @@ Span returns a "span" element with type *dom.HTMLSpanElement
 #### func  Strike
 
 ```go
-func Strike() dom.Element
+func Strike() *dom.BasicHTMLElement
 ```
-Strike returns a "strike" element with type dom.Element
+Strike returns a "strike" element with type *dom.BasicHTMLElement
 
 #### func  Strong
 
 ```go
-func Strong() dom.Element
+func Strong() *dom.BasicHTMLElement
 ```
-Strong returns a "strong" element with type dom.Element
+Strong returns a "strong" element with type *dom.BasicHTMLElement
 
 #### func  Style
 
@@ -737,23 +737,23 @@ Style returns a "style" element with type *dom.HTMLStyleElement
 #### func  Sub
 
 ```go
-func Sub() dom.Element
+func Sub() *dom.BasicHTMLElement
 ```
-Sub returns a "sub" element with type dom.Element
+Sub returns a "sub" element with type *dom.BasicHTMLElement
 
 #### func  Summary
 
 ```go
-func Summary() dom.Element
+func Summary() *dom.BasicHTMLElement
 ```
-Summary returns a "summary" element with type dom.Element
+Summary returns a "summary" element with type *dom.BasicHTMLElement
 
 #### func  Sup
 
 ```go
-func Sup() dom.Element
+func Sup() *dom.BasicHTMLElement
 ```
-Sup returns a "sup" element with type dom.Element
+Sup returns a "sup" element with type *dom.BasicHTMLElement
 
 #### func  Table
 
@@ -772,16 +772,16 @@ Tbody returns a "tbody" element with type *dom.HTMLTableSectionElement
 #### func  Td
 
 ```go
-func Td() *dom.HTMLTableDataCellElement
+func Td() *dom.HTMLTableCellElement
 ```
-Td returns a "td" element with type *dom.HTMLTableDataCellElement
+Td returns a "td" element with type *dom.HTMLTableCellElement
 
 #### func  Template
 
 ```go
-func Template() dom.Element
+func Template() *dom.BasicHTMLElement
 ```
-Template returns a "template" element with type dom.Element
+Template returns a "template" element with type *dom.BasicHTMLElement
 
 #### func  Textarea
 
@@ -800,9 +800,9 @@ Tfoot returns a "tfoot" element with type *dom.HTMLTableSectionElement
 #### func  Th
 
 ```go
-func Th() *dom.HTMLTableHeaderCellElement
+func Th() *dom.HTMLTableCellElement
 ```
-Th returns a "th" element with type *dom.HTMLTableHeaderCellElement
+Th returns a "th" element with type *dom.HTMLTableCellElement
 
 #### func  Thead
 
@@ -842,16 +842,16 @@ Track returns a "track" element with type *dom.HTMLTrackElement
 #### func  Tt
 
 ```go
-func Tt() dom.Element
+func Tt() *dom.BasicHTMLElement
 ```
-Tt returns a "tt" element with type dom.Element
+Tt returns a "tt" element with type *dom.BasicHTMLElement
 
 #### func  U
 
 ```go
-func U() dom.Element
+func U() *dom.BasicHTMLElement
 ```
-U returns a "u" element with type dom.Element
+U returns a "u" element with type *dom.BasicHTMLElement
 
 #### func  Ul
 
@@ -863,9 +863,9 @@ Ul returns a "ul" element with type *dom.HTMLUListElement
 #### func  Var
 
 ```go
-func Var() dom.Element
+func Var() *dom.BasicHTMLElement
 ```
-Var returns a "var" element with type dom.Element
+Var returns a "var" element with type *dom.BasicHTMLElement
 
 #### func  Video
 
@@ -877,6 +877,6 @@ Video returns a "video" element with type *dom.HTMLVideoElement
 #### func  Wbr
 
 ```go
-func Wbr() dom.Element
+func Wbr() *dom.BasicHTMLElement
 ```
-Wbr returns a "wbr" element with type dom.Element
+Wbr returns a "wbr" element with type *dom.BasicHTMLElement
