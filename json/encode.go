@@ -16,7 +16,7 @@ func MarshalString(v interface{}) (string, error) {
 }
 
 func MarshalIndentString(v interface{}, prefix, indent string) (string, error) {
-	str := js.Global.Get("JSON").Call("stringify", js.InternalObject(filterIt).Invoke(js.InternalObject(v), v), nil, indent)
+	str := js.Global.Get("JSON").Call("stringify", jsonify.Invoke(js.InternalObject(v)), nil, indent)
 	if len(prefix) > 0 {
 		str = str.Call("replace", js.Global.Get("RegExp").New("\n", "g"), "\n"+prefix)
 	}
@@ -49,66 +49,44 @@ const (
 	structKind     = 25
 )
 
-func filterIt(v, value *js.Object) *js.Object {
-	filter(v, v.Get("constructor"), value)
-	return value
-}
+var jsonify *js.Object
 
-func filter(v, t, value *js.Object) {
-	switch t.Get("kind").Int() {
-	case arrayKind, sliceKind:
-		len := value.Length()
-		for i := 0; i < len; i++ {
-			filter(v.Get("$array").Index(i), t.Get("elem"), value.Index(i))
-		}
-	case mapKind:
-		keys := js.Global.Get("Object").Call("keys", v)
-		len := keys.Length()
-		for i := 0; i < len; i++ {
-			o := v.Get(keys.Index(i).String())
-			filter(o.Get("v"), t.Get("elem"), value.Get(o.Get("k").String()))
-		}
-	case ptrKind:
-		if v.Get("$val") != t.Get("nil") {
-			filter(v, t.Get("elem"), value)
-		}
-	case structKind:
-		nf := t.Get("fields").Length()
-		for i := 0; i < nf; i++ {
-			field := t.Get("fields").Index(i)
-			fieldType := field.Get("typ")
-			tag, tagOptions := parseTag(getJSONTag(field.Get("tag")))
-			if tag == "-" {
-				value.Delete(field.Get("name").String())
-				continue
-			}
-			name := field.Get("name").String()
-			if name == "" {
-				name = field.Get("prop").String()
-			}
-			if tagOptions.Contains("omitempty") {
-				if isEmpty(v.Get(name), fieldType) {
-					value.Delete(name)
-					continue
-				}
-			}
-			if tagOptions.Contains("string") && stringable(fieldType) {
-				if fieldType.Get("kind").Int() == stringKind {
-					value.Set(name, js.Global.Get("JSON").Call("stringify", v.Get(name)))
-				} else {
-					value.Set(name, value.Get(name).Call("toString"))
-				}
-			} else {
-				filter(v.Get(name), fieldType, value.Get(name))
-			}
-			if len(tag) != 0 && tag != name {
-				value.Set(tag, value.Get(name))
-				value.Delete(name)
+func init() {
+	jsonify = js.InternalObject(func(v *js.Object) *js.Object {
+		t := v.Get("constructor")
+		for t.Get("kind").Int() == ptrKind {
+			if v.Get("$val") != t.Get("nil") {
+				v = v.Call("$get")
+				t = t.Get("elem")
 			}
 		}
-	case interfaceKind:
-		filter(v.Get("$val"), v.Get("constructor"), value)
-	}
+		js.Global.Get("console").Call("log", v)
+		switch t.Get("kind").Int() {
+		case boolKind, intKind, int8Kind, int16Kind, int32Kind, uintKind, uint8Kind, uint16Kind, uint32Kind, uintptrKind, float32Kind, float64Kind, int64Kind, uint64Kind, complex64Kind, complex128Kind, ptrKind, stringKind:
+			return js.Global.Get("$externalize").Invoke(v, t)
+		case arrayKind, sliceKind:
+			l := v.Get("$length").Int()
+			a := js.Global.Get("Array").New(l)
+			for i := 0; i < l; i++ {
+				a.SetIndex(i, jsonify.Invoke(v.Get("$array").Index(i)))
+			}
+			return a
+		case interfaceKind:
+			return jsonify(v.Get("$val"))
+		case mapKind:
+			m := js.Global.Get("Object").New()
+			keys := js.Global.Get("Object").Call("keys", v)
+			len := keys.Length()
+			for i := 0; i < len; i++ {
+				k := keys.Index(i).String()
+				m.Set(k, jsonify(v.Get(k)))
+			}
+			return m
+		case structKind:
+
+		}
+		return js.Undefined
+	})
 }
 
 func isEmpty(v, t *js.Object) bool {
