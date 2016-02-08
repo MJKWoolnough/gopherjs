@@ -74,8 +74,8 @@ func jsonify(v *js.Object) *js.Object {
 		keys := js.Global.Get("Object").Call("keys", v)
 		len := keys.Length()
 		for i := 0; i < len; i++ {
-			k := keys.Index(i).String()
-			m.Set(k, js.InternalObject(jsonify).Invoke(v.Get(k)))
+			val := v.Get(keys.Index(i).String())
+			m.Set(val.Get("k").String(), js.InternalObject(jsonify).Invoke(val.Get("v")))
 		}
 		return m
 	case structKind:
@@ -113,10 +113,37 @@ func jsonify(v *js.Object) *js.Object {
 					todo = append(todo, [2]*js.Object{v.Get(fName), f.Get("typ")})
 				} else if s.Get(jName) == js.Undefined {
 					val := v.Get(fName)
-					if val.Get("constructor").Get("kind") == js.Undefined {
+					if o.Contains("string") && stringable(f.Get("typ")) {
+						s := js.Global.Get("Object").New()
+						s.Set("kind", stringKind)
 						t := js.Global.Get("Object").New()
-						t.Set("kind", f.Get("kind"))
-						val.Set("constructor", t)
+						t.Set("elem", s)
+						t.Set("kind", ptrKind)
+						v := js.Global.Get("Object").New()
+						if f.Get("typ").Get("kind").Int() == stringKind {
+							v.Set("$val", js.Global.Get("JSON").Call("stringify", val))
+						} else {
+							v.Set("$val", val.Call("toString"))
+						}
+						v.Set("constructor", t)
+						v.Set("$get", js.MakeFunc(func(this *js.Object, arguments []*js.Object) interface{} {
+							return this.Get("$val")
+						}))
+						val = v
+
+					} else if val.Get("constructor").Get("kind") == js.Undefined {
+						t := js.Global.Get("Object").New()
+						t.Set("elem", f.Get("typ"))
+						t.Set("kind", ptrKind)
+						v := js.Global.Get("Object").New()
+						v.Set("$val", val)
+						v.Set("constructor", t)
+						v.Set("$get", js.MakeFunc(func(this *js.Object, arguments []*js.Object) interface{} {
+							return this.Get("$val")
+						}))
+						val = v
+					} else if f.Get("typ").Get("kind").Int() == interfaceKind {
+						val = val.Get("$val")
 					}
 					fieldsTodo[jName] = val
 				}
@@ -124,7 +151,7 @@ func jsonify(v *js.Object) *js.Object {
 			for name, f := range fieldsTodo {
 				if f != nil {
 					s.Set(name, js.InternalObject(jsonify).Invoke(f))
-					delete(fieldsTodo, name)
+					//delete(fieldsTodo, name)
 				}
 			}
 		}
