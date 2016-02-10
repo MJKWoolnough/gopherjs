@@ -49,7 +49,7 @@ const (
 	structKind     = 25
 )
 
-func getInnerType(v, t *js.Object) (*js.Object, *js.Object) {
+func unwrap(v, t *js.Object) (*js.Object, *js.Object) {
 Loop:
 	for {
 		switch t.Get("kind").Int() {
@@ -58,7 +58,7 @@ Loop:
 				v = v.Call("$get")
 				t = t.Get("elem")
 			} else {
-				break
+				break Loop
 			}
 		case interfaceKind:
 			t = v.Get("constructor")
@@ -70,9 +70,22 @@ Loop:
 	return v, t
 }
 
+func wrap(v, t *js.Object) *js.Object {
+	nt := js.Global.Get("Object").New()
+	nt.Set("elem", t)
+	nt.Set("kind", ptrKind)
+	nv := js.Global.Get("Object").New()
+	nv.Set("$val", v)
+	nv.Set("constructor", nt)
+	nv.Set("$get", js.MakeFunc(func(this *js.Object, _ []*js.Object) interface{} {
+		return this.Get("$val")
+	}))
+	return nv
+}
+
 func jsonify(v *js.Object) *js.Object {
 	t := v.Get("constructor")
-	v, t = getInnerType(v, t)
+	v, t = unwrap(v, t)
 	switch t.Get("kind").Int() {
 	case boolKind, intKind, int8Kind, int16Kind, int32Kind, uintKind, uint8Kind, uint16Kind, uint32Kind, uintptrKind, float32Kind, float64Kind, int64Kind, uint64Kind, complex64Kind, complex128Kind, ptrKind, stringKind:
 		return js.Global.Call("$externalize", v, t)
@@ -94,80 +107,68 @@ func jsonify(v *js.Object) *js.Object {
 		return m
 	case structKind:
 		s := js.Global.Get("Object").New()
-		todo := [][2]*js.Object{{v, t}}
+		nextLevel := [][2]*js.Object{{v, t}}
 		fieldsTodo := make(map[string]*js.Object)
-		for len(todo) > 0 {
-			v := todo[0][0]
-			t := todo[0][1]
-			todo = todo[1:]
-			fields := t.Get("fields")
-			fieldsLen := fields.Length()
-			for i := 0; i < fieldsLen; i++ {
-				f := fields.Index(i)
-				if f.Get("pkg").Length() > 0 {
-					continue
-				}
-				fName := f.Get("prop").String()
-				name := f.Get("name").String()
-				anon := false
-				if name == "" {
-					name = fName // filter $x?
-					anon = true
-				}
-				n, o := parseTag(getJSONTag(f.Get("tag")))
-				if n == "-" || (o.Contains("omitempty") && isEmpty(v.Get(fName), f.Get("typ"))) {
-					continue
-				}
-				jName := name
-				if n != "" {
-					jName = n
-				}
-				if _, ok := fieldsTodo[jName]; ok {
-					fieldsTodo[jName] = nil
-				} else if anon {
-					v, t = getInnerType(v.Get(fName), f.Get("typ"))
-					todo = append(todo, [2]*js.Object{v, t})
-				} else if s.Get(jName) == js.Undefined {
-					val := v.Get(fName)
-					vt := f.Get("typ")
-					val, vt = getInnerType(val, vt)
-					if o.Contains("string") && stringable(vt) {
-						s := js.Global.Get("Object").New()
-						s.Set("kind", stringKind)
-						t := js.Global.Get("Object").New()
-						t.Set("elem", s)
-						t.Set("kind", ptrKind)
-						v := js.Global.Get("Object").New()
-						if vt.Get("kind").Int() == stringKind {
-							v.Set("$val", js.Global.Get("JSON").Call("stringify", val))
-						} else {
-							v.Set("$val", val.Call("toString"))
-						}
-						v.Set("constructor", t)
-						v.Set("$get", js.MakeFunc(func(this *js.Object, arguments []*js.Object) interface{} {
-							return this.Get("$val")
-						}))
-						val = v
-
-					} else if val.Get("constructor").Get("kind") == js.Undefined {
-						t := js.Global.Get("Object").New()
-						t.Set("elem", vt)
-						t.Set("kind", ptrKind)
-						v := js.Global.Get("Object").New()
-						v.Set("$val", val)
-						v.Set("constructor", t)
-						v.Set("$get", js.MakeFunc(func(this *js.Object, arguments []*js.Object) interface{} {
-							return this.Get("$val")
-						}))
-						val = v
+		for len(nextLevel) > 0 {
+			level := nextLevel
+			//nextLevel = nextLevel[:0]
+			nextLevel = make([][2]*js.Object, 0)
+			for len(level) > 0 {
+				v := level[0][0]
+				t := level[0][1]
+				level = level[1:]
+				fields := t.Get("fields")
+				fieldsLen := fields.Length()
+				for i := 0; i < fieldsLen; i++ {
+					f := fields.Index(i)
+					if f.Get("pkg").Length() > 0 {
+						continue
 					}
-					fieldsTodo[jName] = val
+					fName := f.Get("prop").String()
+					name := f.Get("name").String()
+					anon := false
+					if name == "" {
+						name = fName // filter $x?
+						anon = true
+					}
+					n, o := parseTag(getJSONTag(f.Get("tag")))
+					if n == "-" || (o.Contains("omitempty") && isEmpty(v.Get(fName), f.Get("typ"))) {
+						continue
+					}
+					jName := name
+					if n != "" {
+						jName = n
+					}
+					if anon {
+						nv, nt := unwrap(v.Get(fName), f.Get("typ"))
+						if nv != nt.Get("nil") {
+							nextLevel = append(nextLevel, [2]*js.Object{nv, nt})
+						}
+					} else if _, ok := fieldsTodo[jName]; ok {
+						fieldsTodo[jName] = nil
+					} else if s.Get(jName) == js.Undefined {
+						val := v.Get(fName)
+						vt := f.Get("typ")
+						val, vt = unwrap(val, vt)
+						if o.Contains("string") && stringable(vt) {
+							s := js.Global.Get("Object").New()
+							s.Set("kind", stringKind)
+							if vt.Get("kind").Int() == stringKind {
+								val = wrap(js.Global.Get("JSON").Call("stringify", val), s)
+							} else {
+								val = wrap(val.Call("toString"), s)
+							}
+						} else if val.Get("constructor").Get("kind") == js.Undefined {
+							val = wrap(val, vt)
+						}
+						fieldsTodo[jName] = val
+					}
 				}
 			}
 			for name, f := range fieldsTodo {
 				if f != nil {
 					s.Set(name, js.InternalObject(jsonify).Invoke(f))
-					//delete(fieldsTodo, name)
+					fieldsTodo[name] = nil
 				}
 			}
 		}
