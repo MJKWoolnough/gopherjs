@@ -15,7 +15,14 @@ func MarshalString(v interface{}) (string, error) {
 	return MarshalIndentString(v, "", "")
 }
 
-func MarshalIndentString(v interface{}, prefix, indent string) (string, error) {
+func MarshalIndentString(v interface{}, prefix, indent string) (json string, err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			if er, ok := e.(*js.Error); ok {
+				err = er
+			}
+		}
+	}()
 	str := js.Global.Get("JSON").Call("stringify", js.InternalObject(jsonify).Invoke(js.InternalObject(v)), nil, indent)
 	if len(prefix) > 0 {
 		str = str.Call("replace", js.Global.Get("RegExp").New("\n", "g"), "\n"+prefix)
@@ -167,7 +174,15 @@ func jsonify(v *js.Object) *js.Object {
 			}
 			for name, f := range fieldsTodo {
 				if f != nil {
-					s.Set(name, js.InternalObject(jsonify).Invoke(f))
+					if isMarshaler(f) {
+						tup := f.Call("MarshalJSON")
+						if tup.Index(1) != js.Global.Get("$ifaceNil") {
+							panic(tup.Index(1))
+						}
+						s.Set(name, js.Global.Get("JSON").Call("parse", js.Global.Call("$bytesToString", tup.Index(0)).String()))
+					} else {
+						s.Set(name, js.InternalObject(jsonify).Invoke(f))
+					}
 					fieldsTodo[name] = nil
 				}
 			}
@@ -210,10 +225,15 @@ func stringable(t *js.Object) bool {
 	return false
 }
 
-func isMarshaler(t *js.Object) bool {
-	methodNum := t.Get("methods").Length()
+func isMarshaler(v *js.Object) bool {
+	_, t := unwrap(v, v.Get("constructor"))
+	methods := t.Get("methods")
+	if methods == js.Undefined {
+		return false
+	}
+	methodNum := methods.Length()
 	for i := 0; i < methodNum; i++ {
-		method := t.Get("methods").Index(i)
+		method := methods.Index(i)
 		if method.Get("name").String() == "MarshalJSON" {
 			mt := method.Get("typ")
 			return mt.Get("params").Length() == 0 && mt.Get("results").Length() == 2 && mt.Get("results").Index(0).Get("string").String() == "[]uint8" && mt.Get("results").Index(1).Get("string").String() == "error"
