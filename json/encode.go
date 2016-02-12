@@ -153,7 +153,7 @@ func jsonify(v *js.Object) *js.Object {
 						}
 					} else if _, ok := fieldsTodo[jName]; ok {
 						fieldsTodo[jName] = nil
-					} else if s.Get(jName) == js.Undefined {
+					} else {
 						val := v.Get(fName)
 						vt := f.Get("typ")
 						val, vt = unwrap(val, vt)
