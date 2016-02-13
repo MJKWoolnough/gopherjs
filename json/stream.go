@@ -20,3 +20,18 @@ func (e *Encoder) Encode(v interface{}) error {
 	e.err = err
 	return err
 }
+
+type Decoder struct {
+	r   io.Reader
+	err error
+}
+
+func NewDecoder(r io.Reader) *Decoder {
+	return Decoder{r: r}
+}
+
+func (d *Decoder) Decode(v interface{}) error {
+	// read single json object from reader. Until either io.EOF or an invalid combination of chars, e.g. }{, ][, ]{, }[, etc.
+	str := ""
+	return Unmarshal(str, v)
+}
