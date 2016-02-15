@@ -82,14 +82,16 @@ func (p *parser) Accept(s string) bool {
 }
 
 func (p *parser) AcceptRun(s string) {
+Loop:
 	for {
 		b := p.Next()
 		for i := 0; i < len(s); i++ {
-			if s[i] != b {
-				p.Backup()
-				return
+			if s[i] == b {
+				continue Loop
 			}
 		}
+		p.Backup()
+		return
 	}
 }
 
