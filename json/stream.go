@@ -50,7 +50,7 @@ type parser struct {
 
 func (p *parser) Next() byte {
 	var b byte
-	if p.buf >= 0 {
+	if p.buf > 0 {
 		b = p.buf
 		p.buf = 0
 	} else {
