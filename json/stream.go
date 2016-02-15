@@ -149,7 +149,9 @@ func (d *Decoder) readValue() bool {
 }
 
 func (d *Decoder) readString() bool {
-	d.p.Accept("\"")
+	if !d.p.Accept("\"") {
+		return false
+	}
 	for {
 		switch c := d.p.Next(); c {
 		case '"':
@@ -187,11 +189,47 @@ func (d *Decoder) readNumber(c byte) bool {
 }
 
 func (d *Decoder) readObject() bool {
-
+	d.p.Accept("{")
+	for {
+		d.p.AcceptRun(whitespace)
+		if !d.readString() {
+			return false
+		}
+		d.p.AcceptRun(whitespace)
+		if !d.p.Accept(":") {
+			return false
+		}
+		if !d.readValue() {
+			return false
+		}
+		d.p.AcceptRun(whitespace)
+		if d.p.Accept("}") {
+			return true
+		}
+		if !d.p.Accept(",") {
+			return false
+		}
+	}
 }
 
 func (d *Decoder) readArray() bool {
-
+	d.p.Accept("[")
+	d.p.AcceptRun(whitespace)
+	if d.p.Accept("]") {
+		return true
+	}
+	for {
+		if !d.readValue() {
+			return false
+		}
+		d.p.AcceptRun(whitespace)
+		if d.p.Accept("]") {
+			return true
+		}
+		if !d.p.Accept(",") {
+			return false
+		}
+	}
 }
 
 func (d *Decoder) readTrue() bool {
