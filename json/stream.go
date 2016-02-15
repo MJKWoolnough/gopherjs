@@ -25,8 +25,7 @@ func (e *Encoder) Encode(v interface{}) error {
 }
 
 type Decoder struct {
-	p   parser
-	err error
+	p parser
 }
 
 type byteReader struct {
@@ -73,21 +72,21 @@ func (p *parser) Backup() {
 
 func (p *parser) Accept(s string) bool {
 	b := p.Next()
-	for _, c := range s {
-		if c == b {
+	for i := 0; i < len(s); i++ {
+		if s[i] == b {
 			return true
 		}
 	}
-	b.Backup()
+	p.Backup()
 	return false
 }
 
 func (p *parser) AcceptRun(s string) {
 	for {
 		b := p.Next()
-		for _, c := range s {
-			if c != b {
-				b.Backup()
+		for i := 0; i < len(s); i++ {
+			if s[i] != b {
+				p.Backup()
 				return
 			}
 		}
@@ -105,12 +104,17 @@ func NewDecoder(r io.Reader) *Decoder {
 	if !ok {
 		b = byteReader{r}
 	}
-	return &Decoder{p: parser{b}}
+	return &Decoder{p: parser{ByteReader: b}}
 }
 
 func (d *Decoder) Decode(v interface{}) error {
-	bytes, err := d.readValue()
-	if err != nil {
+	d.p.err = nil
+	d.p.read = d.p.read[:0]
+	if !d.readValue() {
+		return errInvalidJSON
+	}
+	if d.p.err != nil {
+		err := d.p.err
 		return err
 	}
 	if !d.readValue() {
@@ -119,8 +123,7 @@ func (d *Decoder) Decode(v interface{}) error {
 		}
 		return errInvalidJSON
 	}
-	s := string(d.p.buf)
-	d.p.buf = d.p.buf[:0]
+	s := string(d.p.read)
 	return UnmarshalString(s, v)
 }
 
@@ -172,7 +175,7 @@ func (d *Decoder) readString() bool {
 	}
 }
 
-func (d *Decoder) readNumber(c byte) bool {
+func (d *Decoder) readNumber() bool {
 	d.p.Accept("-")
 	if !d.p.Accept("0") {
 		d.p.Accept("123456789")
