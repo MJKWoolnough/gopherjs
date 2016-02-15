@@ -195,8 +195,11 @@ func (d *Decoder) readNumber() bool {
 
 func (d *Decoder) readObject() bool {
 	d.p.Accept("{")
+	d.p.AcceptRun(whitespace)
+	if d.p.Accept("}") {
+		return true
+	}
 	for {
-		d.p.AcceptRun(whitespace)
 		if !d.readString() {
 			return false
 		}
@@ -214,6 +217,7 @@ func (d *Decoder) readObject() bool {
 		if !d.p.Accept(",") {
 			return false
 		}
+		d.p.AcceptRun(whitespace)
 	}
 }
 
