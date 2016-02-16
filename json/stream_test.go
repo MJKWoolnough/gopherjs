@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestDecoder(t *testing.T) {
+func TestJSONRead(t *testing.T) {
 	d := NewDecoder(strings.NewReader("\"Hello\" {} [{\"Pi\": 3.12159E1, \"Meaning Of Life\": 42}, {\"Good?\": true, \"Bad\": false, \"Ugly?\"	:null}] "))
 	lengths := []int{7, 3, 89}
 	for n, l := range lengths {
