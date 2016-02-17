@@ -1,3 +1,4 @@
+// Package mutation provides a wrapper for the MutationObserver API
 package mutation
 
 import (
