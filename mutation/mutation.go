@@ -6,14 +6,18 @@ import (
 	"honnef.co/go/js/dom"
 )
 
+// Observer wraps a MutationObserver javascript object
 type Observer struct {
 	*js.Object
 }
 
+// New creates a new wrapper around MutationObserver, which is created with the
+// given callback
 func New(f func([]*Record, *Observer)) *Observer {
 	return &Observer{js.Global.Get("MutationObserver").New(f)}
 }
 
+// Observe registers a DOM Node to receive events for
 func (m *Observer) Observe(n dom.Node, i ObserverInit) {
 	j := &observerInit{Object: js.Global.Get("Object").Get("constructor").New()}
 	j.ChildList = i.ChildList
@@ -28,10 +32,12 @@ func (m *Observer) Observe(n dom.Node, i ObserverInit) {
 	m.Call("observe", n.Underlying(), j)
 }
 
+// Disconnect stops the observer from receiving events
 func (m *Observer) Disconnect() {
 	m.Call("disconnect")
 }
 
+// TakeRecords empties the record queue, returning what was in it
 func (m *Observer) TakeRecords() []*Record {
 	o := m.Call("takeRecords")
 	l := o.Length()
@@ -42,6 +48,7 @@ func (m *Observer) TakeRecords() []*Record {
 	return mrs
 }
 
+// Record is a wrapper around a MutationRecord js type
 type Record struct {
 	*js.Object
 	Type               string `js:"type"`
@@ -50,6 +57,7 @@ type Record struct {
 	OldValue           string `js:"oldValue"`
 }
 
+// Target returns the node associated with the record
 func (r *Record) Target() dom.Node {
 	return dom.WrapNode(r.Get("target"))
 }
@@ -63,22 +71,27 @@ func wrapNodes(o *js.Object) []dom.Node {
 	return toRet
 }
 
+// AddedNodes returns any nodes that were added
 func (r *Record) AddedNodes() []dom.Node {
 	return wrapNodes(r.Get("addedNodes"))
 }
 
+// RemovedNodes returns any nodes that were added
 func (r *Record) RemovedNodes() []dom.Node {
 	return wrapNodes(r.Get("removedNodes"))
 }
 
+// PreviousSibling returns the previous sibling to any added or removed nodes
 func (r *Record) PreviousSibling() dom.Node {
 	return dom.WrapNode(r.Get("previousSibling"))
 }
 
+// NextSibling returns the next sibling to any added or removed nodes
 func (r *Record) NextSibling() dom.Node {
 	return dom.WrapNode(r.Get("nextSibling"))
 }
 
+// ObserverInit contains the options for observing a Node
 type ObserverInit struct {
 	ChildList             bool
 	Attributes            bool
