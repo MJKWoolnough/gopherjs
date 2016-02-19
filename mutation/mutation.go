@@ -19,15 +19,19 @@ func New(f func([]*Record, *Observer)) *Observer {
 
 // Observe registers a DOM Node to receive events for
 func (m *Observer) Observe(n dom.Node, i ObserverInit) {
-	j := &observerInit{Object: js.Global.Get("Object").Get("constructor").New()}
-	j.ChildList = i.ChildList
-	j.Attributes = i.Attributes
-	j.CharacterData = i.CharacterData
-	j.Subtree = i.Subtree
-	j.AttributeOldValue = i.AttributeOldValue
-	j.CharacterDataOldValue = i.CharacterDataOldValue
+	j := js.Global.Get("Object").Get("constructor").New()
+	j.Set("childList", i.ChildList)
+	j.Set("attributes", i.Attributes)
+	j.Set("characterData", i.CharacterData)
+	j.Set("subtree", i.Subtree)
+	j.Set("attributeOldValue", i.AttributeOldValue)
+	j.Set("characterDataOldValue", i.CharacterDataOldValue)
 	if i.Attributes {
-		j.AttributeFilter = i.AttributeFilter
+		a := js.Get("Array").New(len(i.AttributeFilter))
+		for i, f := range i.AttributeFilter {
+			a.SetIndex(i, f)
+		}
+		j.Set("attributeFilter", a)
 	}
 	m.Call("observe", n.Underlying(), j)
 }
