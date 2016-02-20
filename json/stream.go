@@ -5,6 +5,20 @@ import (
 	"io"
 )
 
+type RawMessage []byte
+
+func (r *RawMessage) MarshalJSON() ([]byte, error) {
+	return *r, nil
+}
+
+func (r *RawMessage) UnmarshalJSON(data []byte) error {
+	if r == nil {
+		return ErrRawNil
+	}
+	*r = append((*r)[:0], data...)
+	return nil
+}
+
 type Encoder struct {
 	w   io.Writer
 	err error
@@ -253,4 +267,8 @@ func (d *Decoder) readNull() bool {
 	return d.p.Accept("n") && d.p.Accept("u") && d.p.Accept("l") && d.p.Accept("l")
 }
 
-var errInvalidJSON = errors.New("invalid JSON")
+// Errors
+var (
+	errInvalidJSON = errors.New("invalid JSON")
+	ErrRawNil      = errors.New("RawMessage cannot be nil pointer")
+)
