@@ -30,9 +30,23 @@ func Dial(addr string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	reqs := make(map[uint]func(json.RawMessage, error))
+	w.AddEventListener("message", false, func(e *js.Object) {
+		var (
+			r request
+			m json.RawMessage
+		)
+		r.Params[0] = &m
+		err := json.UnmarshalString(e.Get("data").String(), &r)
+		f, ok := reqs[r.ID]
+		if ok {
+			delete(reqs, r.ID)
+			f(m, err)
+		}
+	})
 	return &Client{
 		ws:   w,
-		reqs: make(map[uint]func(json.RawMessage, error)),
+		reqs: reqs,
 	}, nil
 }
 
