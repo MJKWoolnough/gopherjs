@@ -25,13 +25,15 @@ type Client struct {
 	reqs   map[uint]func(json.RawMessage, error)
 }
 
-func NewClient(addr string) *Client {
+func Dial(addr string) (*Client, error) {
 	w, err := websocket.New(addr)
-
+	if err != nil {
+		return nil, err
+	}
 	return &Client{
 		ws:   w,
 		reqs: make(map[uint]func(json.RawMessage, error)),
-	}
+	}, nil
 }
 
 func (c *Client) Call(method string, args interface{}, reply interface{}) error {
