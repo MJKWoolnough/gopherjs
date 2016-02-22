@@ -68,11 +68,25 @@ func (c *Client) Go(method string, args interface{}, reply interface{}, done cha
 	if done == nil {
 		call.Done = make(chan *Call, 1)
 	} else {
+		if cap(done) < 1 {
+			panic("invalid channel capacity")
+		}
 		call.Done = done
 	}
-	c.nextID++
-	id := c.nextID
-	c.reqs[id] = func(rm json.RawMessage, err error) {
+	str, err := json.MarshalString(request{
+		Method: method,
+		ID:     c.nextID,
+		Params: [1]interface{}{args},
+	})
+	if err == nil {
+		err = c.ws.Send(str)
+	}
+	if err != nil {
+		call.Error = err
+		call.Done <- call
+		return call
+	}
+	c.reqs[c.nextID] = func(rm json.RawMessage, err error) {
 		if err != nil {
 			call.Error = err
 		} else if err = json.Unmarshal(rm, reply); err != nil {
@@ -80,5 +94,6 @@ func (c *Client) Go(method string, args interface{}, reply interface{}, done cha
 		}
 		call.Done <- call
 	}
+	c.nextID++
 	return call
 }
