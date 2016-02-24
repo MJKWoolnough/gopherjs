@@ -25,7 +25,7 @@ func MarshalIndentString(v interface{}, prefix, indent string) (json string, err
 	}()
 	str := js.Global.Get("JSON").Call("stringify", js.InternalObject(jsonify).Invoke(js.InternalObject(v)), nil, indent)
 	if len(prefix) > 0 {
-		str = str.Call("replace", js.Global.Get("RegExp").New("\n", "g"), "\n"+prefix)
+		str = str.Call("replace", "\n", "\n"+prefix)
 	}
 	return str.String(), nil
 }
