@@ -23,7 +23,7 @@ func MarshalIndentString(v interface{}, prefix, indent string) (json string, err
 			}
 		}
 	}()
-	str := js.Global.Get("JSON").Call("stringify", js.InternalObject(jsonify).Invoke(js.InternalObject(v)), nil, indent)
+	str := js.Global.Get("JSON").Call("stringify", js.InternalObject(toObject).Invoke(js.InternalObject(v)), nil, indent)
 	if len(prefix) > 0 {
 		str = str.Call("replace", "\n", "\n"+prefix)
 	}
@@ -90,7 +90,7 @@ func wrap(v, t *js.Object) *js.Object {
 	return nv
 }
 
-func jsonify(v *js.Object) *js.Object {
+func toObject(v *js.Object) *js.Object {
 	t := v.Get("constructor")
 	v, t = unwrap(v, t)
 	switch t.Get("kind").Int() {
@@ -100,7 +100,7 @@ func jsonify(v *js.Object) *js.Object {
 		l := v.Get("$length").Int()
 		a := js.Global.Get("Array").New(l)
 		for i := 0; i < l; i++ {
-			a.SetIndex(i, js.InternalObject(jsonify).Invoke(v.Get("$array").Index(i)))
+			a.SetIndex(i, js.InternalObject(toObject).Invoke(v.Get("$array").Index(i)))
 		}
 		return a
 	case mapKind:
@@ -109,7 +109,7 @@ func jsonify(v *js.Object) *js.Object {
 		len := keys.Length()
 		for i := 0; i < len; i++ {
 			val := v.Get(keys.Index(i).String())
-			m.Set(val.Get("k").String(), js.InternalObject(jsonify).Invoke(val.Get("v")))
+			m.Set(val.Get("k").String(), js.InternalObject(toObject).Invoke(val.Get("v")))
 		}
 		return m
 	case structKind:
@@ -181,7 +181,7 @@ func jsonify(v *js.Object) *js.Object {
 						}
 						s.Set(name, js.Global.Get("JSON").Call("parse", js.Global.Call("$bytesToString", tup.Index(0)).String()))
 					} else {
-						s.Set(name, js.InternalObject(jsonify).Invoke(f))
+						s.Set(name, js.InternalObject(toObject).Invoke(f))
 					}
 					fieldsTodo[name] = nil
 				}
