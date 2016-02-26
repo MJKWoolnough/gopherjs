@@ -1,16 +1,16 @@
 package json
 
-import (
-	"bytes"
+import "github.com/gopherjs/gopherjs/js"
 
-	"github.com/gopherjs/gopherjs/js"
-)
+type StringWriter interface {
+	WriteString(string) (int, error)
+}
 
-func Compact(dst *bytes.Buffer, src []byte) error {
+func Compact(dst StringWriter, src []byte) error {
 	return Indent(dst, src, "", "")
 }
 
-func Indent(dst *bytes.Buffer, src []byte, prefix, indent string) (err error) {
+func Indent(dst StringWriter, src []byte, prefix, indent string) (err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			if er, ok := e.(*js.Error); ok && er != nil {
