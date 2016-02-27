@@ -3,7 +3,13 @@ package json
 import (
 	"errors"
 	"io"
+
+	"github.com/gopherjs/gopherjs/js"
 )
+
+type JSObject struct {
+	*js.Object
+}
 
 type RawMessage []byte
 

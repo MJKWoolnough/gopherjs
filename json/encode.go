@@ -113,6 +113,9 @@ func toObject(v *js.Object) *js.Object {
 		}
 		return m
 	case structKind:
+		if t.Get("name").String() == "JSObject" { // needs checking
+			return v.Get("Object")
+		}
 		s := js.Global.Get("Object").New()
 		nextLevel := [][2]*js.Object{{v, t}}
 		fieldsTodo := make(map[string]*js.Object)
