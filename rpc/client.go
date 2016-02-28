@@ -1,8 +1,8 @@
 package rpc
 
 import (
-	"encoding/json"
-
+	"github.com/MJKWoolnough/gopherjs/json"
+	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/websocket"
 )
 
@@ -20,7 +20,7 @@ type request struct {
 }
 
 type Client struct {
-	ws     *websocket.Websocket
+	ws     *websocket.WebSocket
 	nextID uint
 	reqs   map[uint]func(json.RawMessage, error)
 }
@@ -56,7 +56,7 @@ func (c *Client) Call(method string, args interface{}, reply interface{}) error 
 }
 
 func (c *Client) Close() error {
-	return c.w.Close()
+	return c.ws.Close()
 }
 
 func (c *Client) Go(method string, args interface{}, reply interface{}, done chan *Call) *Call {
