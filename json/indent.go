@@ -22,7 +22,7 @@ func Indent(dst StringWriter, src []byte, prefix, indent string) (err error) {
 	}()
 	str := js.Global.Get("JSON").Call("stringify", js.Global.Get("JSON").Call("parse", string(src)), nil, indent)
 	if len(prefix) > 0 {
-		str = str.Call("replace", js.Global.Get("RegExp").New("\n", "g"), "\n"+prefix)
+		str = str.Call("replace", "\n", "\n"+prefix)
 	}
 	_, err = dst.WriteString(str.String())
 	return err
