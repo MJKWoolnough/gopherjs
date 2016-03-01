@@ -6,6 +6,7 @@ import (
 	"github.com/gopherjs/websocket"
 )
 
+// Call represents the necessary data for an RPC call
 type Call struct {
 	ServiceMethod string
 	Args, Reply   interface{}
@@ -19,12 +20,14 @@ type request struct {
 	Params [1]interface{} `json:"params"`
 }
 
+// Client is an RPC client
 type Client struct {
 	ws     *websocket.WebSocket
 	nextID uint
 	reqs   map[uint]func(json.RawMessage, error)
 }
 
+// Dial connects a websocket to the given address and creates the client
 func Dial(addr string) (*Client, error) {
 	w, err := websocket.New(addr)
 	if err != nil {
@@ -50,15 +53,22 @@ func Dial(addr string) (*Client, error) {
 	}, nil
 }
 
+// Call make an RPC request to the given method name
 func (c *Client) Call(method string, args interface{}, reply interface{}) error {
 	call := <-c.Go(method, args, reply, make(chan *Call, 1)).Done
 	return call.Error
 }
 
+// Close closes the websocket - it does not currently do anything special with
+// outstanding requests
 func (c *Client) Close() error {
 	return c.ws.Close()
 }
 
+// Go makes an RPC request in a goroutine, returning a Call for the user to
+// be notified upon completion and to retrieve any errors returned.
+//
+// If a nil done chan is given, one will be created
 func (c *Client) Go(method string, args interface{}, reply interface{}, done chan *Call) *Call {
 	call := &Call{
 		ServiceMethod: method,
