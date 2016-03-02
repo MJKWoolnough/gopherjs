@@ -1,3 +1,4 @@
+// Package rpc is a client-only RPC package using websockets for javascript
 package rpc
 
 import (
