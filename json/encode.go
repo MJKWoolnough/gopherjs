@@ -117,7 +117,7 @@ func toObject(v *js.Object) *js.Object {
 			return v.Get("Object")
 		}
 		s := js.Global.Get("Object").New()
-		nextLevel := [][2]*js.Object{{v, t}}
+		nextLevel := [][2]*js.Object{{v.Get("$val"), t}}
 		fieldsTodo := make(map[string]*js.Object)
 		for len(nextLevel) > 0 {
 			level := nextLevel
