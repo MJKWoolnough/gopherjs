@@ -3,7 +3,7 @@ package overlay
 
 import (
 	"github.com/MJKWoolnough/gopherjs/style"
-	"github.com/MJKWoolnough/gopherjs/xjs"
+	"github.com/MJKWoolnough/gopherjs/xdom"
 	"honnef.co/go/js/dom"
 )
 
@@ -87,10 +87,10 @@ func (o *Overlay) Close() error {
 
 // New wraps a dom.Element in an Overlay
 func New(e dom.Node) *Overlay {
-	o := &Overlay{Element: xjs.CreateElement("div")}
+	o := &Overlay{Element: xdom.Div()}
 	o.SetAttribute("class", "mw-overlay")
-	c := xjs.CreateElement("div")
-	xjs.SetInnerText(c, "X")
+	c := xdom.Div()
+	c.SetTextContent("X")
 	c.SetAttribute("class", "closer")
 	c.AddEventListener("click", false, func(dom.Event) {
 		o.Close()
