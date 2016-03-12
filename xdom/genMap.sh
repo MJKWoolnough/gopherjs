@@ -11,6 +11,11 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 	"honnef.co/go/js/dom"
 )
+
+// Text returns a text node with the text set to the given string
+func Text(s string) *dom.Text {
+	return &dom.Text{&dom.BasicNode{js.Global.Get("document").Call("createTextNode", s)}}
+}
 HEREDOC
 	while read element; do
 		eType="BasicHTMLElement";
