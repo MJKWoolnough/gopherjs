@@ -2,19 +2,25 @@ package json
 
 import "github.com/gopherjs/gopherjs/js"
 
+// Marshal encodes v into a byte slice, using the same rules as stdlib/json
 func Marshal(v interface{}) ([]byte, error) {
 	return MarshalIndent(v, "", "")
 }
 
+// MarshalIndent is like Marshal, but applies the given indentation and prefix
+// to the beginning of the line
 func MarshalIndent(v interface{}, prefix, indent string) ([]byte, error) {
 	s, err := MarshalIndentString(v, prefix, indent)
 	return []byte(s), err
 }
 
+// MarshalString encodes v into a byte slice, using the same rules as
+// stdlib/json
 func MarshalString(v interface{}) (string, error) {
 	return MarshalIndentString(v, "", "")
 }
 
+// MarshalIndentString is like MarshalIndent, but outputs a string
 func MarshalIndentString(v interface{}, prefix, indent string) (json string, err error) {
 	defer func() {
 		if e := recover(); e != nil {
