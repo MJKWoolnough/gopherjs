@@ -13,6 +13,11 @@ func Text(s string) *dom.Text {
 	return &dom.Text{&dom.BasicNode{js.Global.Get("document").Call("createTextNode", s)}}
 }
 
+// DocumentFragment returns a new DocumentFragment
+func DocumentFragment() *dom.BasicHTMLElement {
+	return &dom.BasicHTMLElement{&dom.BasicElement{&dom.BasicNode{js.Global.Get("document").Call("createDocumentFragment")}}}
+}
+
 // A returns a "a" element with type *dom.HTMLAnchorElement
 func A() *dom.HTMLAnchorElement {
 	o := js.Global.Get("document").Call("createElement", "a")
