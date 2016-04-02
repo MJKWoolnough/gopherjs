@@ -34,13 +34,6 @@ func CreateElement(name string) dom.Element
 ```
 CreateElement is a shortcut to create an element with the given name
 
-#### func  DocumentFragment
-
-```go
-func DocumentFragment() *dom.BasicHTMLElement
-```
-DocumentFragment returns a new DocumentFragment as a dom.Node
-
 #### func  Log
 
 ```go

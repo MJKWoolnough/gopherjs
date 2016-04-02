@@ -25,11 +25,6 @@ func Body() *dom.HTMLBodyElement {
 	return body
 }
 
-// DocumentFragment returns a new DocumentFragment as a dom.Node
-func DocumentFragment() *dom.BasicHTMLElement {
-	return &dom.BasicHTMLElement{&dom.BasicElement{&dom.BasicNode{js.Global.Get("document").Call("createDocumentFragment")}}}
-}
-
 // RemoveChildren removes all of the child nodes of the node given
 func RemoveChildren(node dom.Node) dom.Node {
 	n := node.Underlying()
