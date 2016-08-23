@@ -114,7 +114,7 @@ type Tab struct {
 
 // New takes a list of tabs and generates a tabbed interface, which is return as a document fragment
 func New(t []Tab) dom.Node {
-	f := xjs.DocumentFragment()
+	f := xdom.DocumentFragment()
 	if len(t) < 0 {
 		return f
 	}
