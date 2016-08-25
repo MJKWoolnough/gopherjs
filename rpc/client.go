@@ -45,7 +45,7 @@ func Dial(addr string) (*Client, error) {
 		f, ok := reqs[r.ID]
 		if ok {
 			delete(reqs, r.ID)
-			f(m, err)
+			go f(m, err)
 		}
 	})
 	return &Client{
