@@ -59,7 +59,7 @@ func New(fore, back color.Color, width, height int) *Bar {
 	return bar
 }
 
-// ProgressReader wraps a ProgressBar to automatically update when an io.Reader
+// Reader wraps a ProgressBar to automatically update when an io.Reader
 // is read
 type Reader struct {
 	*Bar
@@ -67,7 +67,7 @@ type Reader struct {
 	offset, size int
 }
 
-// Reader returns a ProgressReader
+// Reader returns a Reader type
 func (b *Bar) Reader(r io.Reader, size int) *Reader {
 	return &Reader{b, r, 0, size}
 }

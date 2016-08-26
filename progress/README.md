@@ -37,7 +37,7 @@ Percent sets the current percentage shown
 ```go
 func (b *Bar) Reader(r io.Reader, size int) *Reader
 ```
-Reader returns a ProgressReader
+Reader returns a Reader type
 
 #### type Reader
 
@@ -48,8 +48,7 @@ type Reader struct {
 }
 ```
 
-ProgressReader wraps a ProgressBar to automatically update when an io.Reader is
-read
+Reader wraps a ProgressBar to automatically update when an io.Reader is read
 
 #### func (*Reader) Len
 
