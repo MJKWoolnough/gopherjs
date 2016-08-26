@@ -13,7 +13,7 @@ import (
 // body var used to cache the wrapped body once Body is sucessfully called
 var body *dom.HTMLBodyElement
 
-// Get the document's body element
+// Body gets the document's body element
 func Body() *dom.HTMLBodyElement {
 	if body == nil {
 		o := js.Global.Get("document").Get("body")
@@ -70,7 +70,7 @@ func Alert(format string, params ...interface{}) {
 	js.Global.Get("document").Call("alert", fmt.Sprintf(format, params...))
 }
 
-// TextNode creates a text node containing the givin text
+// Text creates a text node containing the givin text
 func Text(text string) *dom.Text {
 	return &dom.Text{&dom.BasicNode{js.Global.Get("document").Call("createTextNode", text)}}
 }
@@ -83,6 +83,7 @@ func AppendChildren(parent dom.Node, children ...dom.Node) dom.Node {
 	return parent
 }
 
+// Log prints a formatted string to the javascript console
 func Log(format string, params ...interface{}) {
 	js.Global.Get("console").Call("log", fmt.Sprintf(format, params...))
 }

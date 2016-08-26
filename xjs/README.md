@@ -25,7 +25,7 @@ AppendChildren appends all the given children to the parent.
 ```go
 func Body() *dom.HTMLBodyElement
 ```
-Get the document's body element
+Body gets the document's body element
 
 #### func  CreateElement
 
@@ -39,6 +39,7 @@ CreateElement is a shortcut to create an element with the given name
 ```go
 func Log(format string, params ...interface{})
 ```
+Log prints a formatted string to the javascript console
 
 #### func  RemoveChildren
 
@@ -67,4 +68,4 @@ SetPreText does similar to SetInnerText, but linebreaks are converted to <br />s
 ```go
 func Text(text string) *dom.Text
 ```
-TextNode creates a text node containing the givin text
+Text creates a text node containing the givin text
