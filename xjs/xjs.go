@@ -67,7 +67,7 @@ func CreateElement(name string) dom.Element {
 
 // Alert provides for formated alert boxes
 func Alert(format string, params ...interface{}) {
-	js.Global.Get("document").Call("alert", fmt.Sprintf(format, params...))
+	js.Global.Call("alert", fmt.Sprintf(format, params...))
 }
 
 // Text creates a text node containing the givin text
