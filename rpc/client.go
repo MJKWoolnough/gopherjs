@@ -2,9 +2,11 @@
 package rpc
 
 import (
-	"github.com/MJKWoolnough/gopherjs/json"
+	"encoding/json"
+
+	"github.com/MJKWoolnough/errors"
 	"github.com/gopherjs/gopherjs/js"
-	"github.com/gopherjs/websocket"
+	"github.com/gopherjs/websocket/websocketjs"
 )
 
 // Call represents the necessary data for an RPC call
@@ -21,33 +23,43 @@ type request struct {
 	Params [1]interface{} `json:"params"`
 }
 
+type response struct {
+	ID     uint            `json:"id"`
+	Result json.RawMessage `json:"result"`
+	Error  string          `json:"error"`
+}
+
 // Client is an RPC client
 type Client struct {
-	ws     *websocket.WebSocket
+	ws     *websocketjs.WebSocket
 	nextID uint
 	reqs   map[uint]func(json.RawMessage, error)
 }
 
 // Dial connects a websocket to the given address and creates the client
 func Dial(addr string) (*Client, error) {
-	w, err := websocket.New(addr)
+	w, err := websocketjs.New(addr)
 	if err != nil {
 		return nil, err
 	}
 	reqs := make(map[uint]func(json.RawMessage, error))
+	ready := make(chan struct{})
+	w.AddEventListener("open", false, func(*js.Object) {
+		close(ready)
+	})
 	w.AddEventListener("message", false, func(e *js.Object) {
-		var (
-			r request
-			m json.RawMessage
-		)
-		r.Params[0] = &m
-		err := json.UnmarshalString(e.Get("data").String(), &r)
+		var r response
+		err := json.Unmarshal([]byte(e.Get("data").String()), &r)
 		f, ok := reqs[r.ID]
 		if ok {
+			if err == nil && len(r.Error) != 0 {
+				err = errors.Error(r.Error)
+			}
 			delete(reqs, r.ID)
-			go f(m, err)
+			go f(r.Result, err)
 		}
 	})
+	<-ready
 	return &Client{
 		ws:   w,
 		reqs: reqs,
@@ -84,13 +96,13 @@ func (c *Client) Go(method string, args interface{}, reply interface{}, done cha
 		}
 		call.Done = done
 	}
-	str, err := json.MarshalString(request{
+	str, err := json.Marshal(request{
 		Method: method,
 		ID:     c.nextID,
 		Params: [1]interface{}{args},
 	})
 	if err == nil {
-		err = c.ws.Send(str)
+		err = c.ws.Send(string(str))
 	}
 	if err != nil {
 		call.Error = err
