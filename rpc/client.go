@@ -3,8 +3,8 @@ package rpc
 
 import (
 	"encoding/json"
+	"errors"
 
-	"github.com/MJKWoolnough/errors"
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/websocket/websocketjs"
 )
@@ -53,7 +53,7 @@ func Dial(addr string) (*Client, error) {
 		f, ok := reqs[r.ID]
 		if ok {
 			if err == nil && len(r.Error) != 0 {
-				err = errors.Error(r.Error)
+				err = errors.New(r.Error)
 			}
 			delete(reqs, r.ID)
 			go f(r.Result, err)
