@@ -27,7 +27,7 @@ func (m *Observer) Observe(n dom.Node, i ObserverInit) {
 	j.Set("attributeOldValue", i.AttributeOldValue)
 	j.Set("characterDataOldValue", i.CharacterDataOldValue)
 	if i.Attributes {
-		a := js.Get("Array").New(len(i.AttributeFilter))
+		a := js.Global.Get("Array").New(len(i.AttributeFilter))
 		for i, f := range i.AttributeFilter {
 			a.SetIndex(i, f)
 		}
