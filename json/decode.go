@@ -1,4 +1,4 @@
-package json
+package json // import "vimagination.zapto.org/gopherjs/json"
 
 import (
 	"errors"

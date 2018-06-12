@@ -3,7 +3,7 @@
 (
 	cat <<HEREDOC
 // Package xdom provides simple functions to create HTML elements with the correct type
-package xdom
+package xdom // import "vimagination.zapto.org/gopherjs/xdom"
 
 // File automatically generated with ./genMap.sh
 

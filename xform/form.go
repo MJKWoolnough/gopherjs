@@ -1,13 +1,13 @@
 // Package xform provides some shortcut funcs for various form related activites
-package xform
+package xform // import "vimagination.zapto.org/gopherjs/xform"
 
 import (
 	"strconv"
 
-	"github.com/MJKWoolnough/gopherjs/style"
-	"github.com/MJKWoolnough/gopherjs/xdom"
 	"github.com/gopherjs/gopherjs/js"
 	"honnef.co/go/js/dom"
+	"vimagination.zapto.org/gopherjs/style"
+	"vimagination.zapto.org/gopherjs/xdom"
 )
 
 func init() {

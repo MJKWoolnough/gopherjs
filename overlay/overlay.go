@@ -1,10 +1,10 @@
 // Package overlay creates a simple 'window' overlay system for gopherjs
-package overlay
+package overlay // import "vimagination.zapto.org/gopherjs/overlay"
 
 import (
-	"github.com/MJKWoolnough/gopherjs/style"
-	"github.com/MJKWoolnough/gopherjs/xdom"
 	"honnef.co/go/js/dom"
+	"vimagination.zapto.org/gopherjs/style"
+	"vimagination.zapto.org/gopherjs/xdom"
 )
 
 const css = `

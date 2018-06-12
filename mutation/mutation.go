@@ -1,5 +1,5 @@
 // Package mutation provides a wrapper for the MutationObserver API
-package mutation
+package mutation // import "vimagination.zapto.org/gopherjs/mutation"
 
 import (
 	"github.com/gopherjs/gopherjs/js"

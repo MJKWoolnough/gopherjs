@@ -1,5 +1,5 @@
 // Package xjs provides some simple, but often needed shortcut funcs for gopherJS
-package xjs
+package xjs // import "vimagination.zapto.org/gopherjs/xjs"
 
 import (
 	"fmt"

@@ -1,10 +1,10 @@
 // Package style implements a simple way to handle styling in an HTML document
-package style
+package style // import "vimagination.zapto.org/gopherjs/style"
 
 import (
-	"github.com/MJKWoolnough/gopherjs/xdom"
-	"github.com/MJKWoolnough/gopherjs/xjs"
 	"honnef.co/go/js/dom"
+	"vimagination.zapto.org/gopherjs/xdom"
+	"vimagination.zapto.org/gopherjs/xjs"
 )
 
 // Add adds the given CSS string to the DOM

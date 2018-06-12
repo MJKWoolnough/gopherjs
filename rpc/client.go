@@ -1,5 +1,5 @@
 // Package rpc is a client-only RPC package using websockets for javascript
-package rpc
+package rpc // import "vimagination.zapto.org/gopherjs/rpc"
 
 import (
 	"encoding/json"

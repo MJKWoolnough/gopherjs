@@ -1,5 +1,5 @@
 // Package files turns javascript files into io.Reader's
-package files
+package files // import "vimagination.zapto.org/gopherjs/files"
 
 import (
 	"errors"

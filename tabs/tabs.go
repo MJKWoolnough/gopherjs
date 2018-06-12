@@ -1,11 +1,11 @@
 // Package tabs implements a simple tab interface for HTML documents
-package tabs
+package tabs // import "vimagination.zapto.org/gopherjs/tabs"
 
 import (
-	"github.com/MJKWoolnough/gopherjs/style"
-	"github.com/MJKWoolnough/gopherjs/xdom"
-	"github.com/MJKWoolnough/gopherjs/xjs"
 	"honnef.co/go/js/dom"
+	"vimagination.zapto.org/gopherjs/style"
+	"vimagination.zapto.org/gopherjs/xdom"
+	"vimagination.zapto.org/gopherjs/xjs"
 )
 
 const css = `.tabs {

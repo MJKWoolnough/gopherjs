@@ -1,12 +1,12 @@
 // Package progress creates a simple progress bar in javascript
-package progress
+package progress // import "vimagination.zapto.org/gopherjs/progress"
 
 import (
 	"image/color"
 	"io"
 	"strconv"
 
-	"github.com/MJKWoolnough/gopherjs/xdom"
+	"vimagination.zapto.org/gopherjs/xdom"
 
 	"honnef.co/go/js/dom"
 )
